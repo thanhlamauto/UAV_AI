@@ -1,0 +1,5 @@
+feature_group,features,model,target,feature_rows,train_trials,test_trials,majority_accuracy,model_accuracy,model_macro_f1,beats_majority,recall_future_risk,recall_no_future_risk
+radar,radar_peak radar_peak_bin radar_energy,random_forest,future_risk_label,1096,1 2 3 4 5 6 7 8 9 10 184 185 186 187,188 189 190 191 192 345,0.8385,0.823,0.5123,0,0.0769,0.9667
+camera_depth,depth_min depth_p10 depth_median,random_forest,future_risk_label,1096,1 2 3 4 5 6 7 8 9 10 184 185 186 187,188 189 190 191 192 345,0.8385,0.764,0.5092,0,0.1346,0.8852
+radar_imu,radar_peak radar_peak_bin radar_energy imu_acc_norm imu_gyro_norm,random_forest,future_risk_label,1096,1 2 3 4 5 6 7 8 9 10 184 185 186 187,188 189 190 191 192 345,0.8385,0.8447,0.5111,1,0.0577,0.9963
+depth_radar_imu,depth_min depth_p10 depth_median radar_peak radar_peak_bin radar_energy imu_acc_norm imu_gyro_norm,random_forest,future_risk_label,1096,1 2 3 4 5 6 7 8 9 10 184 185 186 187,188 189 190 191 192 345,0.8385,0.8447,0.5405,1,0.0962,0.9889
