@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Audit current evidence against the active ODA planner benchmark goal."""
+"""Audit current evidence against the active ODA 300-trial project goal."""
 
 from __future__ import annotations
 
@@ -20,36 +20,56 @@ def csv_values(path: str | Path, column: str) -> list[str]:
         return [row[column] for row in csv.DictReader(f)]
 
 
+def ready_count(path: str | Path) -> tuple[int, int]:
+    path = Path(path)
+    if not path.exists() or path.stat().st_size == 0:
+        return 0, 0
+    with path.open(newline="") as f:
+        rows = list(csv.DictReader(f))
+    return sum(int(row.get("ready", 0)) for row in rows), len(rows)
+
+
+def has_column(path: str | Path, column: str) -> bool:
+    path = Path(path)
+    if not path.exists() or path.stat().st_size == 0:
+        return False
+    with path.open(newline="") as f:
+        reader = csv.DictReader(f)
+        return column in (reader.fieldnames or [])
+
+
 def main() -> None:
     checks = []
 
-    readiness = Path("outputs/tables/target_20_trials_readiness.csv")
-    manifest = Path("outputs/tables/target_20_trials_manifest.csv")
-    metrics = Path("outputs/tables/batch_planner_metrics.csv")
-    summary = Path("outputs/tables/planner_comparison_summary.csv")
+    readiness_300 = Path("outputs/tables/target_300_trials_readiness.csv")
+    manifest_300 = Path("outputs/tables/target_300_trials_manifest.csv")
+    metrics_300 = Path("outputs/tables/batch_planner_metrics_300.csv")
+    summary_300 = Path("outputs/tables/planner_comparison_summary_300.csv")
+    balanced = Path("outputs/tables/perception_risk_ablation_balanced_metrics_dpt.csv")
+    recall_tuned = Path("outputs/tables/perception_risk_ablation_recall_tuned_metrics_dpt.csv")
+    onnx_timing = Path("outputs/tables/depth_onnx_timing_dpt_probe.csv")
+    external_probe = Path("outputs/tables/external_dataset_probe.csv")
 
-    manifest_rows = count_rows(manifest)
-    ready_rows = 0
-    if readiness.exists():
-        with readiness.open(newline="") as f:
-            ready_rows = sum(int(row["ready"]) for row in csv.DictReader(f))
+    manifest_rows = count_rows(manifest_300)
+    ready_rows, readiness_rows = ready_count(readiness_300)
 
-    methods = set(csv_values(metrics, "method")) if metrics.exists() and metrics.stat().st_size else set()
-    required_methods = {"human", "straight_line", "astar_grid"}
+    methods = set(csv_values(metrics_300, "method")) if metrics_300.exists() and metrics_300.stat().st_size else set()
+    required_methods = {"human", "straight_line", "astar_grid", "rrt", "rrt_star", "mppi"}
     has_geometric = any(method.startswith("geometric_bypass") for method in methods)
 
-    checks.append(("20-trial manifest exists", manifest_rows >= 20, f"{manifest_rows} rows"))
-    checks.append(("20 trials fully downloaded", ready_rows >= 20, f"{ready_rows}/20 ready"))
-    checks.append(("batch benchmark output exists", count_rows(metrics) > 0, f"{count_rows(metrics)} metric rows"))
-    checks.append(("risk labels included", "future_risk_count" in (Path(metrics).read_text().splitlines()[0] if metrics.exists() and metrics.stat().st_size else ""), "future_risk_count column"))
+    checks.append(("300-trial manifest exists", manifest_rows >= 300, f"{manifest_rows} rows"))
+    checks.append(("300 trials fully downloaded", ready_rows >= 300 and readiness_rows >= 300, f"{ready_rows}/{readiness_rows} ready"))
+    checks.append(("300-trial batch benchmark output exists", count_rows(metrics_300) >= 2100, f"{count_rows(metrics_300)} metric rows"))
+    checks.append(("risk labels included", has_column(metrics_300, "future_risk_count"), "future_risk_count column"))
     checks.append(("straight-line baseline included", "straight_line" in methods, f"methods={sorted(methods)}"))
     checks.append(("geometric bypass baseline included", has_geometric, f"methods={sorted(methods)}"))
     checks.append(("human trajectory included", "human" in methods, f"methods={sorted(methods)}"))
-    checks.append(("A* baseline included", "astar_grid" in methods, f"methods={sorted(methods)}"))
-    checks.append(("RRT baseline included", "rrt" in methods, f"methods={sorted(methods)}"))
-    checks.append(("RRT* baseline included", "rrt_star" in methods, f"methods={sorted(methods)}"))
-    checks.append(("MPPI baseline included", "mppi" in methods, f"methods={sorted(methods)}"))
-    checks.append(("planner summary exists", count_rows(summary) > 0, f"{count_rows(summary)} rows"))
+    checks.append(("required planner baselines included", required_methods.issubset(methods), f"methods={sorted(methods)}"))
+    checks.append(("300-trial planner summary exists", count_rows(summary_300) >= 8, f"{count_rows(summary_300)} rows"))
+    checks.append(("imbalance macro-F1 tuning output exists", count_rows(balanced) >= 4 and has_column(balanced, "model_balanced_accuracy"), f"{count_rows(balanced)} rows"))
+    checks.append(("imbalance recall tuning output exists", count_rows(recall_tuned) >= 4 and has_column(recall_tuned, "recall_future_risk"), f"{count_rows(recall_tuned)} rows"))
+    checks.append(("ONNX depth timing output exists", count_rows(onnx_timing) >= 3 and has_column(onnx_timing, "inference_seconds_per_frame"), f"{count_rows(onnx_timing)} rows"))
+    checks.append(("external dataset probe exists", count_rows(external_probe) >= 3, f"{count_rows(external_probe)} rows"))
 
     print("Goal completion audit")
     print("=====================")

@@ -1,0 +1,9 @@
+method,trials,collision_rate,safety_violation_rate,mean_min_clearance_m,mean_path_length_m,mean_smoothness,mean_planner_compute_time_ms
+astar_grid,300,0.0,0.0,0.6426,6.2658,0.005906,8.6793
+geometric_bypass,196,0.0,0.0051,0.7005,6.3015,0.000236,6.386
+geometric_bypass_not_needed,104,0.0,0.0,0.8647,5.6692,0.0,2.463
+human,300,0.0733,0.4467,0.6126,6.6398,0.679198,0.0
+mppi,300,0.0,0.0033,0.7574,6.0809,0.000104,39.9327
+rrt,300,0.0,0.0,0.6702,6.194,0.000551,3.6168
+rrt_star,300,0.0,0.0,0.636,6.0122,6.2e-05,1196.3979
+straight_line,300,0.14,0.6533,0.4203,5.9686,0.0,2.8712

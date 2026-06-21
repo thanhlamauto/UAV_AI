@@ -48,6 +48,30 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--test-fraction", type=float, default=0.30)
     parser.add_argument("--model", default="random_forest", choices=["logistic", "random_forest", "centroid"])
     parser.add_argument(
+        "--class-weight",
+        default="balanced",
+        choices=["none", "balanced", "balanced_subsample"],
+        help="Class weighting for sklearn classifiers. Use none to disable.",
+    )
+    parser.add_argument(
+        "--resample-train",
+        default="none",
+        choices=["none", "oversample"],
+        help="Optional train-only minority oversampling for imbalanced risk labels.",
+    )
+    parser.add_argument(
+        "--optimize-threshold",
+        action="store_true",
+        help="For binary sklearn models, tune the positive-class probability threshold on the train split.",
+    )
+    parser.add_argument(
+        "--threshold-metric",
+        default="macro_f1",
+        choices=["macro_f1", "future_risk_recall"],
+        help="Train-split metric used when --optimize-threshold is enabled.",
+    )
+    parser.add_argument("--random-state", type=int, default=7)
+    parser.add_argument(
         "--groups",
         nargs="*",
         default=list(FEATURE_GROUPS),
@@ -107,7 +131,85 @@ def centroid_predict(x_train: np.ndarray, y_train: np.ndarray, x_test: np.ndarra
     return np.asarray([classes[int(idx)] for idx in np.argmin(distances, axis=1)], dtype=int)
 
 
-def sklearn_predict(model_name: str, x_train: np.ndarray, y_train: np.ndarray, x_test: np.ndarray) -> np.ndarray | None:
+def oversample_minority(
+    x_train: np.ndarray,
+    y_train: np.ndarray,
+    random_state: int,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Duplicate minority-class samples in the train split only."""
+
+    classes, counts = np.unique(y_train, return_counts=True)
+    if len(classes) < 2:
+        return x_train, y_train
+    max_count = int(counts.max())
+    rng = np.random.default_rng(random_state)
+    x_parts = [x_train]
+    y_parts = [y_train]
+    for cls, count in zip(classes, counts):
+        deficit = max_count - int(count)
+        if deficit <= 0:
+            continue
+        cls_indices = np.flatnonzero(y_train == cls)
+        sampled = rng.choice(cls_indices, size=deficit, replace=True)
+        x_parts.append(x_train[sampled])
+        y_parts.append(y_train[sampled])
+    return np.concatenate(x_parts, axis=0), np.concatenate(y_parts, axis=0)
+
+
+def class_weight_value(model_name: str, requested: str):
+    if requested == "none":
+        return None
+    if requested == "balanced_subsample" and model_name != "random_forest":
+        return "balanced"
+    return requested
+
+
+def threshold_candidates() -> np.ndarray:
+    return np.linspace(0.05, 0.95, 19)
+
+
+def positive_label_index(labels: list[str]) -> int:
+    if "future_risk" in labels:
+        return labels.index("future_risk")
+    if "danger" in labels:
+        return labels.index("danger")
+    return len(labels) - 1
+
+
+def tune_binary_threshold(
+    y_train: np.ndarray,
+    train_scores: np.ndarray,
+    labels: list[str],
+    metric_name: str,
+) -> float:
+    positive_idx = positive_label_index(labels)
+    best_threshold = 0.5
+    best_score = -1.0
+    for threshold in threshold_candidates():
+        pred = np.where(train_scores >= threshold, positive_idx, 1 - positive_idx)
+        metrics = metrics_from_predictions(y_train, pred, labels)
+        if metric_name == "future_risk_recall":
+            score = metrics.get("recall_future_risk", metrics.get(f"recall_{labels[positive_idx]}", 0.0))
+        else:
+            score = metrics["macro_f1"]
+        if score > best_score:
+            best_score = score
+            best_threshold = float(threshold)
+    return best_threshold
+
+
+def sklearn_predict(
+    model_name: str,
+    x_train: np.ndarray,
+    y_train: np.ndarray,
+    x_test: np.ndarray,
+    labels: list[str],
+    class_weight: str,
+    resample_train: str,
+    optimize_threshold: bool,
+    threshold_metric: str,
+    random_state: int,
+) -> tuple[np.ndarray, str, float | None] | None:
     if len(set(y_train.tolist())) < 2:
         return None
     try:
@@ -118,17 +220,32 @@ def sklearn_predict(model_name: str, x_train: np.ndarray, y_train: np.ndarray, x
     except Exception:
         return None
 
+    x_fit, y_fit = x_train, y_train
+    if resample_train == "oversample":
+        x_fit, y_fit = oversample_minority(x_train, y_train, random_state=random_state)
+
+    weight = class_weight_value(model_name, class_weight)
     if model_name == "random_forest":
-        model = RandomForestClassifier(n_estimators=200, random_state=7, class_weight="balanced")
+        model = RandomForestClassifier(n_estimators=200, random_state=random_state, class_weight=weight)
     elif model_name == "logistic":
         model = make_pipeline(
             StandardScaler(),
-            LogisticRegression(max_iter=1000, random_state=7, class_weight="balanced"),
+            LogisticRegression(max_iter=1000, random_state=random_state, class_weight=weight),
         )
     else:
         return None
-    model.fit(x_train, y_train)
-    return np.asarray(model.predict(x_test), dtype=int)
+    model.fit(x_fit, y_fit)
+
+    threshold = None
+    if optimize_threshold and len(labels) == 2 and hasattr(model, "predict_proba"):
+        positive_idx = positive_label_index(labels)
+        train_scores = model.predict_proba(x_train)[:, positive_idx]
+        test_scores = model.predict_proba(x_test)[:, positive_idx]
+        threshold = tune_binary_threshold(y_train, train_scores, labels, threshold_metric)
+        pred = np.where(test_scores >= threshold, positive_idx, 1 - positive_idx)
+    else:
+        pred = model.predict(x_test)
+    return np.asarray(pred, dtype=int), model_name, threshold
 
 
 def confusion(y_true: np.ndarray, y_pred: np.ndarray, labels: list[str]) -> np.ndarray:
@@ -155,6 +272,7 @@ def metrics_from_predictions(y_true: np.ndarray, y_pred: np.ndarray, labels: lis
     return {
         "accuracy": accuracy,
         "macro_f1": float(np.mean(f1_values)) if f1_values else 0.0,
+        "balanced_accuracy": float(np.mean(list(recalls.values()))) if recalls else 0.0,
         **recalls,
     }
 
@@ -198,6 +316,11 @@ def run_group(
     labels: list[str],
     target: str,
     model_name: str,
+    class_weight: str,
+    resample_train: str,
+    optimize_threshold: bool,
+    threshold_metric: str,
+    random_state: int,
 ) -> dict[str, object]:
     train_rows = [row for row in rows if row["sequence"] in train_trials]
     test_rows = [row for row in rows if row["sequence"] in test_trials]
@@ -206,24 +329,52 @@ def run_group(
     majority_pred = majority_predict(y_train, len(y_test))
     majority_metrics = metrics_from_predictions(y_test, majority_pred, labels)
 
-    model_pred = None if model_name == "centroid" else sklearn_predict(model_name, x_train, y_train, x_test)
+    model_result = None
+    if model_name != "centroid":
+        model_result = sklearn_predict(
+            model_name=model_name,
+            x_train=x_train,
+            y_train=y_train,
+            x_test=x_test,
+            labels=labels,
+            class_weight=class_weight,
+            resample_train=resample_train,
+            optimize_threshold=optimize_threshold,
+            threshold_metric=threshold_metric,
+            random_state=random_state,
+        )
     actual_model = model_name
-    if model_pred is None:
+    threshold = None
+    if model_result is None:
         model_pred = centroid_predict(x_train, y_train, x_test) if len(set(y_train.tolist())) >= 2 else majority_pred
         actual_model = "centroid" if len(set(y_train.tolist())) >= 2 else "majority_only"
+    else:
+        model_pred, actual_model, threshold = model_result
     model_metrics = metrics_from_predictions(y_test, model_pred, labels)
+
+    train_counts = Counter(y_train.tolist())
+    test_counts = Counter(y_test.tolist())
 
     out: dict[str, object] = {
         "feature_group": group_name,
         "features": " ".join(feature_columns),
         "model": actual_model,
         "target": target,
+        "class_weight": class_weight,
+        "resample_train": resample_train,
+        "threshold": "" if threshold is None else round(float(threshold), 4),
+        "threshold_metric": threshold_metric if optimize_threshold else "",
         "feature_rows": len(rows),
         "train_trials": " ".join(train_trials),
         "test_trials": " ".join(test_trials),
+        "train_positive_rate": round(float(np.mean(y_train == positive_label_index(labels))), 4),
+        "test_positive_rate": round(float(np.mean(y_test == positive_label_index(labels))), 4),
+        "train_class_counts": " ".join(f"{labels[int(k)]}:{v}" for k, v in sorted(train_counts.items())),
+        "test_class_counts": " ".join(f"{labels[int(k)]}:{v}" for k, v in sorted(test_counts.items())),
         "majority_accuracy": round(majority_metrics["accuracy"], 4),
         "model_accuracy": round(model_metrics["accuracy"], 4),
         "model_macro_f1": round(model_metrics["macro_f1"], 4),
+        "model_balanced_accuracy": round(model_metrics["balanced_accuracy"], 4),
         "beats_majority": int(model_metrics["accuracy"] > majority_metrics["accuracy"]),
     }
     for key, value in sorted(model_metrics.items()):
@@ -247,6 +398,11 @@ def main() -> None:
             labels=labels,
             target=args.target,
             model_name=args.model,
+            class_weight=args.class_weight,
+            resample_train=args.resample_train,
+            optimize_threshold=args.optimize_threshold,
+            threshold_metric=args.threshold_metric,
+            random_state=args.random_state,
         )
         for group in args.groups
     ]

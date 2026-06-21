@@ -1,0 +1,4 @@
+sequence,model_id,backend,onnx_model,providers,frames,duration_s,batch_size,wall_seconds,inference_seconds,seconds_per_frame,inference_seconds_per_frame,output
+3,Intel/dpt-hybrid-midas,onnxruntime,models/depth_onnx/dpt_hybrid_midas/model.onnx,CUDAExecutionProvider;CPUExecutionProvider,44,8.925,8,3.8692,2.0209,0.087937,0.04593,data/processed/depth_onnx_dpt_probe/3/depth_5fps.npz
+10,Intel/dpt-hybrid-midas,onnxruntime,models/depth_onnx/dpt_hybrid_midas/model.onnx,CUDAExecutionProvider;CPUExecutionProvider,72,14.425,8,5.8182,2.7746,0.080808,0.038536,data/processed/depth_onnx_dpt_probe/10/depth_5fps.npz
+345,Intel/dpt-hybrid-midas,onnxruntime,models/depth_onnx/dpt_hybrid_midas/model.onnx,CUDAExecutionProvider;CPUExecutionProvider,61,12.325,8,4.9437,2.3727,0.081044,0.038897,data/processed/depth_onnx_dpt_probe/345/depth_5fps.npz
