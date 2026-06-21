@@ -1,0 +1,7 @@
+dataset,sample,topic,frame_order,frame_offset,timestamp_ns,height,width,raw_points,foreground_points,ground_z_estimate_m,cluster_count,largest_cluster_points,voxel_size_m,x_min_m,ground_margin_m,method
+ARCO,TrafficMonitoring,/ouster/points,0,0,1716472545485597764,32,1024,21836,1254,-0.7451,4,325,0.45,1.0,0.3,ground_percentile_voxel_connected_components
+ARCO,TrafficMonitoring,/ouster/points,1,223,1716472570182754379,32,1024,21377,1731,-0.7334,5,607,0.45,1.0,0.3,ground_percentile_voxel_connected_components
+ARCO,TrafficMonitoring,/ouster/points,2,446,1716472593982393806,32,1024,21585,1485,-0.7432,4,573,0.45,1.0,0.3,ground_percentile_voxel_connected_components
+ARCO,TrafficMonitoring,/ouster/points,3,669,1716472618381041589,32,1024,21249,1375,-0.7401,4,473,0.45,1.0,0.3,ground_percentile_voxel_connected_components
+ARCO,TrafficMonitoring,/ouster/points,4,892,1716472642880613527,32,1024,21138,1784,-0.7385,3,830,0.45,1.0,0.3,ground_percentile_voxel_connected_components
+ARCO,TrafficMonitoring,/ouster/points,5,1116,1716472667180622200,32,1024,21600,1132,-0.7487,5,333,0.45,1.0,0.3,ground_percentile_voxel_connected_components
