@@ -60,6 +60,8 @@ def main() -> None:
     obstacle_repr = Path("outputs/tables/obstacle_representation_aggregate.csv")
     trajectory_feasibility = Path("outputs/tables/trajectory_feasibility_summary.csv")
     lidar_stress = Path("outputs/tables/external_lidar_stress_summary.csv")
+    arco_pc_summary = Path("outputs/tables/arco_pointcloud_segmentation_summary.csv")
+    arco_pc_boxes = Path("outputs/tables/arco_pointcloud_3d_bboxes.csv")
 
     manifest_rows = count_rows(manifest_300)
     ready_rows, readiness_rows = ready_count(readiness_300)
@@ -92,6 +94,8 @@ def main() -> None:
     checks.append(("obstacle representation aggregate exists", count_rows(obstacle_repr) >= 2 and has_column(obstacle_repr, "mean_occupancy_area_m2"), f"{count_rows(obstacle_repr)} rows"))
     checks.append(("trajectory feasibility summary exists", count_rows(trajectory_feasibility) >= 8 and has_column(trajectory_feasibility, "p95_smoothness_heading_change"), f"{count_rows(trajectory_feasibility)} rows"))
     checks.append(("external LiDAR stress summary exists", count_rows(lidar_stress) >= 2 and has_column(lidar_stress, "pointcloud_messages"), f"{count_rows(lidar_stress)} rows"))
+    checks.append(("ARCO point-cloud segmentation summary exists", count_rows(arco_pc_summary) >= 6 and has_column(arco_pc_summary, "cluster_count"), f"{count_rows(arco_pc_summary)} rows"))
+    checks.append(("ARCO 3D bounding boxes exist", count_rows(arco_pc_boxes) >= 20 and has_column(arco_pc_boxes, "bbox_size_z_m"), f"{count_rows(arco_pc_boxes)} rows"))
 
     print("Goal completion audit")
     print("=====================")
