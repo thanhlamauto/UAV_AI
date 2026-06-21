@@ -56,6 +56,10 @@ def main() -> None:
     depth50_calibration = Path("outputs/tables/depth_stability_calibration_depth_anything_v2_small_50.csv")
     arco_probe = Path("outputs/tables/arco_rosbag_topic_probe.csv")
     multilidar_probe = Path("outputs/tables/multilidar_download_link_probe.csv")
+    radar_rd = Path("outputs/tables/radar_range_doppler_summary.csv")
+    obstacle_repr = Path("outputs/tables/obstacle_representation_aggregate.csv")
+    trajectory_feasibility = Path("outputs/tables/trajectory_feasibility_summary.csv")
+    lidar_stress = Path("outputs/tables/external_lidar_stress_summary.csv")
 
     manifest_rows = count_rows(manifest_300)
     ready_rows, readiness_rows = ready_count(readiness_300)
@@ -84,6 +88,10 @@ def main() -> None:
     checks.append(("Depth Anything V2 Small 50-trial calibration exists", count_rows(depth50_calibration) >= 1 and has_column(depth50_calibration, "spearman_depth_median_clearance"), f"{count_rows(depth50_calibration)} rows"))
     checks.append(("ARCO ROS2 bag topic stress probe exists", count_rows(arco_probe) >= 30 and has_column(arco_probe, "message_count"), f"{count_rows(arco_probe)} rows"))
     checks.append(("Multi-LiDAR download link probe exists", count_rows(multilidar_probe) >= 20 and has_column(multilidar_probe, "access_status"), f"{count_rows(multilidar_probe)} rows"))
+    checks.append(("radar range-Doppler summary exists", count_rows(radar_rd) >= 3 and has_column(radar_rd, "mean_peak_doppler_bin"), f"{count_rows(radar_rd)} rows"))
+    checks.append(("obstacle representation aggregate exists", count_rows(obstacle_repr) >= 2 and has_column(obstacle_repr, "mean_occupancy_area_m2"), f"{count_rows(obstacle_repr)} rows"))
+    checks.append(("trajectory feasibility summary exists", count_rows(trajectory_feasibility) >= 8 and has_column(trajectory_feasibility, "p95_smoothness_heading_change"), f"{count_rows(trajectory_feasibility)} rows"))
+    checks.append(("external LiDAR stress summary exists", count_rows(lidar_stress) >= 2 and has_column(lidar_stress, "pointcloud_messages"), f"{count_rows(lidar_stress)} rows"))
 
     print("Goal completion audit")
     print("=====================")

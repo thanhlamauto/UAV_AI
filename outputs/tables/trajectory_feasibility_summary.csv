@@ -1,0 +1,9 @@
+method,trials,collision_rate,safety_violation_rate,mean_speed_mps,p95_mean_speed_mps,mean_path_length_m,mean_smoothness_heading_change,p95_smoothness_heading_change,max_smoothness_heading_change,mean_planner_compute_time_ms,p95_planner_compute_time_ms,feasibility_scope
+astar_grid,300,0.0,0.0,0.7064,1.2933,6.2658,0.005906,0.014213,0.031937,8.6793,16.5236,proxy_from_2d_path_speed_and_heading_change
+geometric_bypass,196,0.0,0.0051,0.6668,1.1977,6.3015,0.000236,0.000684,0.001829,6.386,14.4912,proxy_from_2d_path_speed_and_heading_change
+geometric_bypass_not_needed,104,0.0,0.0,0.7171,1.321,5.6692,0.0,0.0,0.0,2.463,3.7455,proxy_from_2d_path_speed_and_heading_change
+human,300,0.0733,0.4467,0.7371,1.2639,6.6398,0.679198,1.404319,2.653683,0.0,0.0,proxy_from_2d_path_speed_and_heading_change
+mppi,300,0.0,0.0033,0.6841,1.246,6.0809,0.000104,0.000418,0.0013,39.9327,50.1046,proxy_from_2d_path_speed_and_heading_change
+rrt,300,0.0,0.0,0.6976,1.2481,6.194,0.000551,0.002657,0.007097,3.6168,6.3188,proxy_from_2d_path_speed_and_heading_change
+rrt_star,300,0.0,0.0,0.6766,1.236,6.0122,6.2e-05,0.000279,0.000544,1196.3979,2072.8862,proxy_from_2d_path_speed_and_heading_change
+straight_line,300,0.14,0.6533,0.6718,1.2263,5.9686,0.0,0.0,0.0,2.8712,4.4521,proxy_from_2d_path_speed_and_heading_change
