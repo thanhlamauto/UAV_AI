@@ -1,0 +1,4 @@
+sequence,sweeps,doppler_bins,range_bins,mean_peak_range_bin,mode_peak_range_bin,mean_peak_doppler_bin,mode_peak_doppler_bin,zero_doppler_peak_fraction,mean_rd_peak,mean_rd_energy,mean_rd_entropy
+3,139,16,128,21.7842,15,-0.8273,-1,0.1727,15405.6148,936686.521,8.9222
+10,225,16,128,16.9644,3,-0.4711,0,0.5689,12301.6716,559220.215,8.4488
+345,192,16,128,13.7188,6,-0.6146,0,0.526,15303.7128,819704.6243,8.5293

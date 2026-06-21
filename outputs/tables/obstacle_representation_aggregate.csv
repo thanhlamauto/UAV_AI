@@ -1,0 +1,3 @@
+obstacle_count,trials,mean_circle_area_m2,mean_inflated_circle_area_m2,mean_bounding_box_area_m2,mean_occupancy_area_m2,mean_occupancy_fill_ratio,mean_bbox_over_occupancy_ratio,mean_occupancy_grid_cells,mean_occupancy_blocked_cells
+1,150,0.1257,1.5394,1.96,1.56,0.7959,1.2564,196.0,156.0
+2,150,0.2513,3.0788,5.838,3.08,0.5476,1.8955,609.3733,308.0
