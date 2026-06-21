@@ -54,12 +54,16 @@ mkdir -p /workspace/data
 scripts/download_oda_full_zip.sh \
   /workspace/data/Dupeyroux_et_al_2021_ODA_DATASET_Full.zip
 
+ODA_DATASET_ZIP="$(python3 scripts/unwrap_oda_full_zip.py \
+  /workspace/data/Dupeyroux_et_al_2021_ODA_DATASET_Full.zip \
+  --output /workspace/data/Dupeyroux_et_al_2021_ODA_DATASET.zip | tail -n 1)"
+
 python3 scripts/create_oda_20_trial_manifest.py \
-  --zip-path /workspace/data/Dupeyroux_et_al_2021_ODA_DATASET_Full.zip \
+  --zip-path "${ODA_DATASET_ZIP}" \
   --output outputs/tables/target_20_trials_manifest.csv
 
 python3 scripts/extract_oda_trials_from_full_zip.py \
-  /workspace/data/Dupeyroux_et_al_2021_ODA_DATASET_Full.zip \
+  "${ODA_DATASET_ZIP}" \
   --manifest outputs/tables/target_20_trials_manifest.csv \
   --output-root data/raw/ODA_Dataset
 
