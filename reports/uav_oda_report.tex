@@ -109,23 +109,6 @@ Sinh viên xây dựng video định tính theo ba mức:
 Cách tiếp cận này giúp sản phẩm có minh chứng thị giác tương tự các demo multi-sensor nhưng vẫn giữ trọng tâm ở xử lý dữ liệu nhẹ, có thể tái lập nhanh.
 
 \section{Kết quả thực hiện}
-\subsection{Sản phẩm phần mềm}
-Mã nguồn đã được tổ chức theo các module:
-\begin{itemize}
-  \item \texttt{src/oda\_io.py}: đọc metadata, OptiTrack, IMU và radar FFT.
-  \item \texttt{src/metrics.py}: tính distance, clearance, violation, closest approach và path length.
-  \item \texttt{src/risk.py}: tạo nhãn rủi ro theo clearance và nhãn future-risk theo horizon.
-  \item \texttt{src/planners/}: triển khai straight-line, geometric bypass, A* grid planner, RRT, RRT* và MPPI.
-  \item \texttt{src/visualize.py}: vẽ trajectory, obstacle radius, safety boundary và clearance theo thời gian.
-  \item \texttt{experiments/benchmark\_oda.py}: xuất bảng metric và hình tĩnh.
-  \item \texttt{scripts/create\_oda\_trial\_manifest.py}: chọn manifest 20/50/100 trial cân bằng một và hai vật cản.
-  \item \texttt{experiments/batch\_benchmark\_planners.py}: benchmark nhiều trial và xuất bảng so sánh planner.
-  \item \texttt{experiments/make\_qualitative\_video.py}: render video định tính nhiều panel.
-  \item \texttt{experiments/cache\_monocular\_depth.py} và \texttt{cache\_monocular\_depth\_batch.py}: cache monocular relative depth từ RGB video.
-  \item \texttt{experiments/train\_perception\_risk\_ablation.py}: đánh giá ablation depth/radar/IMU cho nhãn future-risk.
-  \item \texttt{experiments/analyze\_radar\_range\_doppler.py}, \texttt{analyze\_obstacle\_representations.py}, \texttt{analyze\_trajectory\_feasibility.py}: bổ sung range-Doppler, representation và feasibility proxy.
-\end{itemize}
-
 \subsection{Kết quả định lượng ban đầu}
 \begin{table}[H]
 \centering
@@ -232,24 +215,6 @@ Các video MP4 đã được xuất tại \texttt{outputs/videos/}. Hai video ho
 
 \subsection{Đính kèm mã nguồn và bộ cài}
 Mã nguồn và script tái lập kết quả nằm trong cùng thư mục dự án, gồm các nhóm lệnh: tải/extract full ODA, tạo manifest 300 trial, chạy benchmark planner, cache Depth Anything V2 Small, tạo perception-risk feature, huấn luyện ablation, phân tích range-Doppler/representation/feasibility, probe ARCO/Multi-LiDAR và chạy \texttt{scripts/audit\_goal\_status.py} để kiểm tra artifact cuối.
-
-\subsection{Đối chiếu yêu cầu bài toán}
-\begin{table}[H]
-\centering
-\scriptsize
-\caption{Đối chiếu checklist đề bài với phạm vi đã triển khai.}
-\begin{tabularx}{0.98\linewidth}{>{\bfseries}p{2.9cm} X X}
-\toprule
-Yêu cầu & Đã thực hiện & Ghi chú/phạm vi \\
-\midrule
-Dữ liệu camera/radar/LiDAR & RGB, radar, IMU và OptiTrack của ODA; ARCO probe có 26324 point-cloud message, Multi-LiDAR 27 link cần đăng nhập. & ODA không phải benchmark LiDAR chính; point cloud dùng làm stress evidence, chưa là pipeline chính. \\
-Phát hiện vật cản & Monocular relative depth, radar FFT/peak/energy, radar range-Doppler \(16\times128\) trên 3 sample, clearance label từ ground truth. & Chưa làm object detection hoặc point-cloud segmentation/clustering. \\
-Biểu diễn vật cản & Safety circle, safety boundary, 2D bounding box và occupancy footprint trên 300 trial; hai vật cản có bbox trung bình \(5.838\,m^2\), occupancy \(3.080\,m^2\). & Chưa dùng voxel/3D bounding box vì ODA metadata là hình học 2D trên mặt phẳng bay. \\
-Lập kế hoạch tránh vật cản & A* search, RRT/RRT* sampling-based, MPPI optimization-based/sampling optimal control. & MPC/ROS controller chưa đưa vào để giữ pipeline nhẹ và tái lập nhanh. \\
-Đánh giá & Collision, safety violation, min clearance, path length, smoothness heading-change, speed proxy và computation time. & Tính khả thi động học mới ở mức proxy; jerk/acceleration/actuator limit là hướng mở rộng. \\
-\bottomrule
-\end{tabularx}
-\end{table}
 
 \section{Đánh giá hiệu quả}
 \begin{table}[H]
