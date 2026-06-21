@@ -88,10 +88,26 @@ Success criteria:
 
 Stretch after 20 trials:
 
-- Add `outputs/tables/target_50_trials_manifest.csv`.
+- Add `outputs/tables/target_50_trials_manifest.csv` or `target_100_trials_manifest.csv`.
 - Select balanced full-light trials with valid obstacle coordinates.
 - Reuse the same extraction and benchmark scripts.
 - Do not change metric definitions between 20-trial and 50-trial runs.
+
+```bash
+python3 scripts/create_oda_trial_manifest.py \
+  --zip-path "${ODA_DATASET_ZIP}" \
+  --total 100 \
+  --output outputs/tables/target_100_trials_manifest.csv
+
+python3 scripts/extract_oda_trials_from_full_zip.py \
+  "${ODA_DATASET_ZIP}" \
+  --manifest outputs/tables/target_100_trials_manifest.csv \
+  --output-root data/raw/ODA_Dataset
+
+scripts/run_oda_manifest_benchmark.sh \
+  outputs/tables/target_100_trials_manifest.csv \
+  outputs_100
+```
 
 ## Phase 2 - GPU Perception-Risk
 
@@ -123,11 +139,49 @@ python3 experiments/train_perception_risk_classifier.py \
   --figure-output outputs/figures/perception_risk_confusion_matrix.png
 ```
 
+Run sensor ablations:
+
+```bash
+python3 experiments/train_perception_risk_ablation.py \
+  --features outputs/tables/perception_risk_features.csv \
+  --output outputs/tables/perception_risk_ablation_metrics.csv \
+  --figure-output outputs/figures/perception_risk_ablation.png
+```
+
+Optimized batch depth inference loads the model once and processes multiple
+frames per forward pass:
+
+```bash
+python3 experiments/cache_monocular_depth_batch.py \
+  --readiness outputs/tables/target_20_trials_readiness.csv \
+  --fps 5 \
+  --device cuda \
+  --batch-size 8 \
+  --output-root data/processed/depth_batch \
+  --timing-output outputs/tables/depth_batch_timing.csv
+```
+
+Depth stability and weak calibration against clearance/radar:
+
+```bash
+python3 experiments/analyze_depth_stability_calibration.py \
+  --features \
+    dpt=outputs/tables/perception_risk_features.csv \
+    depth_anything=outputs/tables/perception_risk_features_depth_anything_v2_small.csv \
+  --output outputs/tables/depth_stability_calibration.csv \
+  --figure-output outputs/figures/depth_stability_calibration.png
+```
+
 Required outputs:
 
 - `outputs/tables/perception_risk_features.csv`
 - `outputs/tables/perception_risk_metrics.csv`
+- `outputs/tables/perception_risk_ablation_metrics.csv`
+- `outputs/tables/depth_batch_timing.csv`
+- `outputs/tables/depth_stability_calibration.csv`
 - `outputs/figures/perception_risk_confusion_matrix.png`
+- `outputs/figures/perception_risk_ablation.png`
+- `outputs/figures/depth_stability_calibration.png`
 - qualitative video with RGB + depth + radar + IMU + risk timeline.
 
 Success criteria:
