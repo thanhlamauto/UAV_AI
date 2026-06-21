@@ -11,8 +11,8 @@ The other README sources are useful for positioning and future validation, but t
 | Source | Role in this project | Use now? |
 | --- | --- | --- |
 | ODA Dataset | Primary benchmark for trajectory risk, obstacle clearance, sensor panels, and planner comparison. | Yes |
-| Multi-LiDAR Multi-UAV Dataset | Future cross-dataset validation for GNSS-denied UAV tracking/localization context. | Later |
-| ARCO Dataset | Radar/LiDAR/IMU reference dataset; useful sensing context but ground-robot, not UAV avoidance. | Later/reference |
+| Multi-LiDAR Multi-UAV Dataset | Future cross-dataset validation for GNSS-denied UAV tracking/localization context; current SharePoint links require login. | Later/auth needed |
+| ARCO Dataset | Radar/LiDAR/IMU reference dataset; useful sensing context but ground-robot, not UAV avoidance. | Stress probe done |
 | MPPI controller repo | Conceptual reference for MPPI cost terms and collision critics. Avoid ROS/Nav2 dependency in this phase. | Reference |
 | FAST-LIVO2 | Related work for visual-LiDAR-inertial SLAM. Out of scope for the current ODA benchmark. | Future work |
 | HEPP paper | Motivation for high-speed UAV planning, low-latency planning, and future planner design. | Cite/read |
@@ -27,11 +27,11 @@ The other README sources are useful for positioning and future validation, but t
 
 ## What Multi-LiDAR Could Validate Later
 
-Multi-LiDAR can help position the work in broader GNSS-denied UAV perception and tracking. A small future validation could compare trajectory/risk abstractions or sensor availability, but porting the full planner benchmark to rosbag-based LiDAR data is out of scope until ODA has 20-100 trial results.
+Multi-LiDAR can help position the work in broader GNSS-denied UAV perception and tracking. The current link probe found 27/27 SharePoint links require Microsoft login, so it should remain a documented future validation target unless authenticated/direct downloads become available. Porting the full planner benchmark to rosbag-based LiDAR data is out of scope because ODA already carries the core UAV avoidance benchmark.
 
 ## Why ARCO Is Not Directly Comparable
 
-ARCO is useful for radar/LiDAR/IMU sensing ideas, but it is a ground-robot dataset. It should not be mixed into the main UAV obstacle-avoidance metrics because vehicle dynamics, obstacle geometry, and task framing differ from ODA.
+ARCO is useful for radar/LiDAR/IMU sensing ideas, but it is a ground-robot dataset. The current probe inspected 3 ROS2 bag ZIP samples, 33 topic rows, and 175997 messages without ROS. It should not be mixed into the main UAV obstacle-avoidance metrics because vehicle dynamics, obstacle geometry, and task framing differ from ODA.
 
 ## How HEPP and MPPI Motivate Future Work
 
@@ -41,7 +41,7 @@ HEPP motivates low-latency planning for high-speed UAV obstacle avoidance. The M
 
 - ROS/Gazebo integration.
 - FAST-LIVO2 deployment.
-- Full rosbag ingestion for external datasets.
+- Full rosbag ingestion for external datasets beyond lightweight sqlite topic/message probes.
 - Claiming metric depth from monocular depth; current depth is relative unless calibrated.
 
 ## Recommended Thesis/Report Wording

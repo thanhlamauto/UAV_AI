@@ -2,9 +2,9 @@
 
 ## Status
 
-Advanced planner methods present in the latest benchmark: mppi, rrt_star.
+Advanced planner methods in the latest 300-trial benchmark: `rrt_star` and `mppi`.
 
-The comparison uses the same ODA ground-plane obstacle model and the same metrics as the earlier human/straight-line/geometric/A*/RRT benchmark:
+All planners use the same ODA ground-plane obstacle model, obstacle radius, safety clearance, and metric definitions:
 
 - collision rate;
 - safety-distance violation rate;
@@ -15,23 +15,23 @@ The comparison uses the same ODA ground-plane obstacle model and the same metric
 
 ## Latest Planner Table
 
-| method | trials | collision_rate | safety_violation_rate | mean_min_clearance_m | mean_path_length_m | mean_planner_compute_time_ms |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| astar_grid | 3 | 0.0 | 0.0 | 0.6092 | 6.8479 | 5.6578 |
-| geometric_bypass | 2 | 0.0 | 0.0 | 0.7208 | 6.977 | 3.1941 |
-| geometric_bypass_not_needed | 1 | 0.0 | 0.0 | 0.7742 | 6.0936 | 1.9279 |
-| human | 3 | 0.0 | 0.3333 | 0.7446 | 7.59 | 0.0 |
-| mppi | 3 | 0.0 | 0.0 | 0.7386 | 6.6814 | 4.4417 |
-| rrt | 3 | 0.0 | 0.0 | 0.6343 | 6.754 | 8.6344 |
-| rrt_star | 3 | 0.0 | 0.0 | 0.636 | 6.7399 | 75.5094 |
-| straight_line | 3 | 0.3333 | 0.6667 | 0.4055 | 6.6072 | 1.6204 |
+| method | trials | collision_rate | safety_violation_rate | mean_min_clearance_m | mean_planner_compute_time_ms |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| astar_grid | 300 | 0.0000 | 0.0000 | 0.6426 | 8.6793 |
+| geometric_bypass | 196 | 0.0000 | 0.0051 | 0.7005 | 6.3860 |
+| geometric_bypass_not_needed | 104 | 0.0000 | 0.0000 | 0.8647 | 2.4630 |
+| human | 300 | 0.0733 | 0.4467 | 0.6126 | 0.0000 |
+| mppi | 300 | 0.0000 | 0.0033 | 0.7574 | 39.9327 |
+| rrt | 300 | 0.0000 | 0.0000 | 0.6702 | 3.6168 |
+| rrt_star | 300 | 0.0000 | 0.0000 | 0.6360 | 1196.3979 |
+| straight_line | 300 | 0.1400 | 0.6533 | 0.4203 | 2.8712 |
 
 ## Planner Failures
 
-No planner-level failures were recorded in `outputs/tables/planner_failures.csv`.
+No planner-level failures were recorded in the 300-trial batch.
 
 ## Interpretation Checklist
 
 - Prefer methods with zero collision and zero safety-distance violation before optimizing path length.
-- Treat MPPI and RRT* compute time as prototype Python timings, not optimized controller timings.
-- Compare against the straight-line baseline to show why obstacle-aware planning is necessary.
+- Treat MPPI and RRT* compute time as prototype Python timings, not optimized onboard-controller timings.
+- Compare against `straight_line` and `human` to show why obstacle-aware planning and perception-risk are both needed.

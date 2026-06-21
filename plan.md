@@ -16,6 +16,14 @@ Default server assumptions:
 - Full ODA ZIP: `/workspace/data/Dupeyroux_et_al_2021_ODA_DATASET_Full.zip`.
 - ODA remains the primary dataset for safety/planner metrics.
 
+Current server status after the follow-up run:
+
+- ODA planner benchmark is complete at 300 trials.
+- Depth Anything V2 Small has been cached on 50 ODA trials: 2584 frames, `0.0639 s/frame` wall time, `0.0174 s/frame` model inference time.
+- Imbalance-aware risk ablations have been rerun on the 50-trial depth/radar/IMU table.
+- TensorRT is blocked on the current Vast container because Docker/Podman, `trtexec`, Python `tensorrt`, and `libnvinfer.so.10` are missing. Use a TensorRT-enabled image for real engine timing.
+- ARCO stress-test downloaded/probed 3 ROS2 bag ZIP samples; Multi-LiDAR link probe found 27/27 SharePoint links require login.
+
 ## Phase 0 - Server Setup
 
 ```bash
@@ -213,7 +221,7 @@ scripts/build_tensorrt_depth_engine.sh \
 Notes:
 
 - ONNX Runtime is the practical inference fallback if TensorRT is not installed.
-- TensorRT engine build requires `trtexec`; use an NVIDIA TensorRT container if the server image lacks it.
+- TensorRT engine build requires `trtexec` and TensorRT runtime libraries; use an NVIDIA TensorRT container/image if the server image lacks them.
 - Always compare timing against `outputs/tables/depth_batch_timing_dpt_20.csv`.
 
 Depth stability and weak calibration against clearance/radar:
@@ -236,6 +244,11 @@ Required outputs:
 - `outputs/tables/depth_batch_timing.csv`
 - `outputs/tables/depth_onnx_timing_dpt_20.csv`
 - `outputs/tables/depth_stability_calibration.csv`
+- `outputs/tables/depth_batch_timing_depth_anything_v2_small_50.csv`
+- `outputs/tables/perception_risk_features_depth_anything_v2_small_50.csv`
+- `outputs/tables/perception_risk_ablation_balanced_metrics_depth_anything_v2_small_50.csv`
+- `outputs/tables/perception_risk_ablation_recall_tuned_metrics_depth_anything_v2_small_50.csv`
+- `outputs/tables/depth_stability_calibration_depth_anything_v2_small_50.csv`
 - `outputs/figures/perception_risk_confusion_matrix.png`
 - `outputs/figures/perception_risk_ablation.png`
 - `outputs/figures/depth_stability_calibration.png`
@@ -244,6 +257,7 @@ Required outputs:
 Success criteria:
 
 - Depth cache exists for all 20 ready trials.
+- Extended Depth Anything V2 Small cache/timing exists for at least 50 ODA trials.
 - The classifier report includes majority accuracy, balanced accuracy, macro-F1, future-risk recall, and train/test positive rates.
 - The imbalance-aware model is judged by recall/macro-F1, not accuracy alone.
 - The report clearly states that depth is relative monocular depth, not metric depth.
@@ -302,19 +316,32 @@ python3 scripts/probe_external_datasets.py \
   --output outputs/tables/external_dataset_probe.csv \
   --summary-output outputs/external_dataset_extension_plan.md
 
+python3 scripts/probe_arco_rosbag_sqlite.py /workspace/data/arco/*.zip \
+  --output outputs/tables/arco_rosbag_topic_probe.csv \
+  --summary-output outputs/arco_rosbag_stress_probe.md
+
+python3 scripts/probe_multilidar_download_links.py \
+  --output outputs/tables/multilidar_download_link_probe.csv \
+  --summary-output outputs/multilidar_download_probe.md
+
 python3 scripts/write_cross_dataset_positioning.py
 ```
 
 Required outputs:
 
 - `outputs/tables/external_dataset_probe.csv`
+- `outputs/tables/arco_rosbag_topic_probe.csv`
+- `outputs/tables/multilidar_download_link_probe.csv`
 - `outputs/external_dataset_extension_plan.md`
+- `outputs/arco_rosbag_stress_probe.md`
+- `outputs/multilidar_download_probe.md`
 - `outputs/cross_dataset_positioning.md`
 
 Success criteria:
 
 - Project narrative is: ODA-based multi-sensor risk-aware UAV obstacle avoidance benchmark.
 - The report states why ODA is controlled/easier and why 300-trial scaling plus external stress probes are needed.
+- ARCO probe is used for radar/LiDAR/IMU sensing stress only; Multi-LiDAR inaccessible links are documented instead of blocking ODA work.
 - Other datasets support stress testing and positioning, not implementation scope creep.
 
 ## Final Deliverables To Pull Back From Server
