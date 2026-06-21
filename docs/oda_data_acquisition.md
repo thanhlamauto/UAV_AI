@@ -33,11 +33,15 @@ Prepared workflow:
 scripts/download_oda_full_zip.sh
 # Or use a large external drive:
 scripts/download_oda_full_zip.sh /Volumes/LargeDrive/Dupeyroux_et_al_2021_ODA_DATASET_Full.zip
+# The downloaded full ZIP may wrap the actual dataset ZIP. This command prints
+# the archive path to use for manifest/extraction:
+ODA_DATASET_ZIP="$(python3 scripts/unwrap_oda_full_zip.py \
+  /path/to/Dupeyroux_et_al_2021_ODA_DATASET_Full.zip | tail -n 1)"
 # Create the manifest from extracted metadata or directly from the full ZIP:
 python3 scripts/create_oda_20_trial_manifest.py \
-  --zip-path /path/to/Dupeyroux_et_al_2021_ODA_DATASET_Full.zip
+  --zip-path "${ODA_DATASET_ZIP}"
 # After the full ZIP is available locally:
-python3 scripts/extract_oda_trials_from_full_zip.py /path/to/Dupeyroux_et_al_2021_ODA_DATASET_Full.zip
+python3 scripts/extract_oda_trials_from_full_zip.py "${ODA_DATASET_ZIP}"
 python3 scripts/check_oda_trial_readiness.py
 scripts/run_oda_target20_benchmark.sh
 ```

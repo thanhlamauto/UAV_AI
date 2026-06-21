@@ -20,6 +20,7 @@ from src.oda_io import dataset_root, read_trial_overview, trial_infos_from_rows
 
 CORRUPTED = {"1306", "1321", "1344"}
 ODA_FULL_ZIP_NAME = "Dupeyroux_et_al_2021_ODA_DATASET_Full.zip"
+ODA_INNER_ZIP_NAME = "Dupeyroux_et_al_2021_ODA_DATASET.zip"
 
 
 def parse_args() -> argparse.Namespace:
@@ -63,8 +64,11 @@ def candidate_zip_paths(explicit_path: str | None) -> list[Path]:
     candidates.extend(
         [
             Path("/workspace/data") / ODA_FULL_ZIP_NAME,
+            Path("/workspace/data") / ODA_INNER_ZIP_NAME,
             Path("data") / ODA_FULL_ZIP_NAME,
+            Path("data") / ODA_INNER_ZIP_NAME,
             Path("data/raw") / ODA_FULL_ZIP_NAME,
+            Path("data/raw") / ODA_INNER_ZIP_NAME,
         ]
     )
 
