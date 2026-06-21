@@ -1,0 +1,11 @@
+item,value
+Unique trial IDs in metadata,1369
+Rows in trial_overview.csv,1997
+Local CSV sample trials,"3, 10, 345"
+Trials with 0 obstacle coordinates,37
+Trials with 1 obstacle coordinate,704
+Trials with 2 obstacle coordinates,628
+Full-light trials in metadata,1286
+Dim-light trials in metadata,83
+Trials with RGB video flag,1228
+Frame convention used here,ground plane = OptiTrack x vs z; height = OptiTrack y
