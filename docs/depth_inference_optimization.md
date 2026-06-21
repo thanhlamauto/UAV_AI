@@ -18,6 +18,23 @@ python3 experiments/cache_monocular_depth_batch.py \
 
 The 20-trial DPT run processed 1096 frames at about `0.0886 s/frame` wall time and `0.0423 s/frame` model inference time.
 
+## Depth Anything V2 Small Batch Run
+
+The stronger 50-trial perception run uses Depth Anything V2 Small through the same batched PyTorch cache path:
+
+```bash
+python3 experiments/cache_monocular_depth_batch.py \
+  --readiness outputs/tables/target_50_trials_readiness.csv \
+  --fps 5 \
+  --device cuda \
+  --batch-size 8 \
+  --model-id depth-anything/Depth-Anything-V2-Small-hf \
+  --output-root data/processed/depth_anything_v2_small_50 \
+  --timing-output outputs/tables/depth_batch_timing_depth_anything_v2_small_50.csv
+```
+
+On the RTX 3060 server, this processed 50 ODA trials / 2584 frames at about `0.0639 s/frame` wall time and `0.0174 s/frame` model inference time. The gap between wall time and inference time is mostly video decode, image preprocessing, CPU/GPU transfer, and compressed NPZ output. This is the current best practical depth pipeline for the project, but the output remains relative monocular depth and must be calibrated against ODA ground truth/radar before being used as metric distance.
+
 ## ONNX Runtime
 
 Export the Hugging Face depth model:
@@ -73,7 +90,7 @@ scripts/build_tensorrt_depth_engine.sh \
   models/depth_tensorrt/dpt_hybrid_midas_fp16.engine
 ```
 
-On the current Vast server, `trtexec` is not installed and ONNX Runtime TensorRT EP fails because `libnvinfer.so.10` is missing. Use an NVIDIA TensorRT container or keep ONNX Runtime CUDA as the practical fallback. Do not claim TensorRT speedups until an engine build and timing run are recorded.
+On the current Vast server, Docker/Podman are unavailable because the instance is an unprivileged container, `trtexec` is not installed, Python `tensorrt` is not installed, and ONNX Runtime TensorRT EP fails because `libnvinfer.so.10` is missing. Use an NVIDIA TensorRT container/image on a fresh instance, or install TensorRT runtime libraries into this container if the provider allows it. Keep ONNX Runtime CUDA or batched PyTorch as the practical fallback. Do not claim TensorRT speedups until an engine build and timing run are recorded.
 
 If ONNX Runtime exposes `TensorrtExecutionProvider`, a lightweight probe can be run without `trtexec`:
 

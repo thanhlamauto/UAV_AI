@@ -1,0 +1,2 @@
+model,rows,trials,mean_abs_depth_median_delta,p95_abs_depth_median_delta,pearson_depth_median_clearance,spearman_depth_median_clearance,pearson_depth_p10_clearance,spearman_depth_p10_clearance,depth_median_linear_clearance_rmse,pearson_radar_peak_clearance,spearman_radar_peak_clearance,pearson_radar_energy_clearance,spearman_radar_energy_clearance
+depth_anything_v2_small_50,2584,50,5.2004,14.912,0.2942,0.3251,-0.2942,-0.3022,1.1733,-0.2079,-0.2314,-0.2161,-0.2443

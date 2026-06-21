@@ -39,3 +39,28 @@
 
 - ONNX Runtime CUDA probe: 3 trials, 177 frames, wall/frame 0.082662s, inference/frame 0.040498s.
 - TensorRT CLI `trtexec` was not installed. ONNX Runtime TensorRT EP failed because `libnvinfer.so.10` was missing, so TensorRT speedup is not claimed.
+
+## Depth Anything V2 Small 50-Trial Run
+
+- Trials: 50.
+- Frames: 2584.
+- Wall/frame: 0.063874s.
+- Inference/frame: 0.017378s.
+- Feature rows: 2584.
+- Macro-F1 tuned depth+radar+IMU: accuracy 0.9011, macro-F1 0.5918, balanced accuracy 0.5697, future-risk recall 0.1594.
+- Recall-tuned depth+radar+IMU: accuracy 0.6602, macro-F1 0.5260, balanced accuracy 0.6631, future-risk recall 0.6667.
+- Calibration/stability: Spearman(depth median, clearance) 0.3251, linear clearance RMSE 1.1733 m.
+
+## TensorRT Runtime Probe
+
+- Current Vast image has no Docker/Podman, no `trtexec`, and no Python `tensorrt`.
+- ONNX Runtime lists `TensorrtExecutionProvider`, but provider initialization fails because `libnvinfer.so.10` is missing.
+- The ONNX script refuses silent CPU fallback when `--provider tensorrt` is requested.
+- Next TensorRT timing should use a TensorRT-enabled image/container and record a real engine build.
+
+## External Sensing Stress Probe
+
+- ARCO: downloaded/probed 3 ROS2 bag ZIP samples without ROS; 33 topic rows, 175997 total messages.
+- ARCO sample message counts: Trajectory1 64104, Trajectory2 71556, TrafficMonitoring 40337.
+- Multi-LiDAR: probed 27 SharePoint links; 27/27 require login, 0 direct download-ready links.
+- ARCO/Multi-LiDAR are positioning/stress-test evidence only. ODA remains the primary UAV obstacle-avoidance benchmark.
