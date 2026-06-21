@@ -125,6 +125,22 @@ def default_depth_cache_path(sequence: str) -> Path:
     return Path("data/processed") / f"depth_sample_{sequence}_5fps.npz"
 
 
+def depth_cache_candidates(sequence: str) -> list[Path]:
+    return [
+        Path("data/processed/depth") / sequence / "depth_5fps.npz",
+        default_depth_cache_path(sequence),
+    ]
+
+
+def resolve_depth_cache_path(sequence: str, explicit_path: str | None) -> Path:
+    if explicit_path:
+        return Path(explicit_path)
+    for candidate in depth_cache_candidates(sequence):
+        if candidate.exists():
+            return candidate
+    return depth_cache_candidates(sequence)[0]
+
+
 def load_depth_cache(path: str | Path) -> dict[str, np.ndarray]:
     cache_path = Path(path)
     with np.load(cache_path, allow_pickle=False) as data:
@@ -468,10 +484,11 @@ def main() -> None:
 
     depth_cache = None
     if args.include_depth:
-        depth_path = Path(args.depth_cache) if args.depth_cache else default_depth_cache_path(sequence)
+        depth_path = resolve_depth_cache_path(sequence, args.depth_cache)
         if not depth_path.exists():
+            candidates = ", ".join(str(path) for path in depth_cache_candidates(sequence))
             raise FileNotFoundError(
-                f"Missing depth cache {depth_path}. Create it with: "
+                f"Missing depth cache {depth_path}. Checked: {candidates}. Create it with: "
                 f"python3 experiments/cache_monocular_depth.py --trial-id {sequence} --output {depth_path}"
             )
         depth_cache = load_depth_cache(depth_path)

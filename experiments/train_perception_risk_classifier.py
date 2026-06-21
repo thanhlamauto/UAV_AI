@@ -41,7 +41,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--metrics-output", default="outputs/tables/perception_risk_metrics.csv")
     parser.add_argument("--figure-output", default="outputs/figures/perception_risk_confusion_matrix.png")
     parser.add_argument("--test-fraction", type=float, default=0.30)
-    parser.add_argument("--model", default="logistic", choices=["logistic", "random_forest", "centroid"])
+    parser.add_argument("--model", default="random_forest", choices=["logistic", "random_forest", "centroid"])
     return parser.parse_args()
 
 
