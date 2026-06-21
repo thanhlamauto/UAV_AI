@@ -1,0 +1,4 @@
+model,rows,trials,mean_abs_depth_median_delta,p95_abs_depth_median_delta,pearson_depth_median_clearance,spearman_depth_median_clearance,pearson_depth_p10_clearance,spearman_depth_p10_clearance,depth_median_linear_clearance_rmse,pearson_radar_peak_clearance,spearman_radar_peak_clearance,pearson_radar_energy_clearance,spearman_radar_energy_clearance
+dpt,1096,20,5.9379,16.4775,0.4131,0.4752,-0.0321,-0.0091,1.195,-0.3018,-0.3388,-0.3216,-0.3572
+batch_dpt,1096,20,5.9397,16.4775,0.4131,0.4752,-0.0321,-0.0092,1.195,-0.3018,-0.3388,-0.3216,-0.3572
+depth_anything,1096,20,4.653,13.875,0.3078,0.3597,-0.2075,-0.1559,1.2485,-0.3018,-0.3388,-0.3216,-0.3572
