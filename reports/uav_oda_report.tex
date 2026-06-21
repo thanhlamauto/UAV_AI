@@ -230,25 +230,35 @@ Các video MP4 đã được xuất tại \texttt{outputs/videos/}. Hai video ho
 \end{figure}
 
 \subsection{Đính kèm mã nguồn và bộ cài}
-Mã nguồn và script tái lập kết quả nằm trong cùng thư mục dự án. Các lệnh chính:
-\begin{lstlisting}[basicstyle=\ttfamily\small,breaklines=true,frame=single]
-scripts/download_oda_full_zip.sh /workspace/data/Dupeyroux_et_al_2021_ODA_DATASET_Full.zip
-python3 scripts/unwrap_oda_full_zip.py /workspace/data/Dupeyroux_et_al_2021_ODA_DATASET_Full.zip
-python3 scripts/create_oda_trial_manifest.py --total 300 --zip-path /workspace/data/Dupeyroux_et_al_2021_ODA_DATASET.zip
-python3 scripts/extract_oda_trials_from_full_zip.py /workspace/data/Dupeyroux_et_al_2021_ODA_DATASET.zip
-scripts/run_oda_manifest_benchmark.sh outputs_300/tables/target_300_trials_manifest.csv outputs_300
-python3 scripts/batch_cache_oda_depth.py --fps 5 --device cuda
-python3 experiments/cache_monocular_depth_batch.py --readiness outputs/tables/target_50_trials_readiness.csv --model-id depth-anything/Depth-Anything-V2-Small-hf --batch-size 8 --fps 5 --device cuda
-scripts/export_depth_to_onnx.sh Intel/dpt-hybrid-midas models/depth_onnx/dpt_hybrid_midas
-python3 experiments/cache_monocular_depth_onnx.py --provider cuda --trial-ids 3 10 345
+Mã nguồn và script tái lập kết quả nằm trong cùng thư mục dự án. Các lệnh chính được gom theo pipeline:
+\begin{lstlisting}[basicstyle=\ttfamily\footnotesize,breaklines=true,frame=single]
+scripts/download_oda_full_zip.sh ...
+python3 scripts/create_oda_trial_manifest.py --total 300 ...
+scripts/run_oda_manifest_benchmark.sh ... outputs_300
+python3 experiments/cache_monocular_depth_batch.py --model-id depth-anything/Depth-Anything-V2-Small-hf ...
 python3 experiments/build_perception_risk_features.py
 python3 experiments/train_perception_risk_ablation.py --resample-train oversample --optimize-threshold
-python3 experiments/analyze_depth_stability_calibration.py
-python3 scripts/probe_external_datasets.py
 python3 scripts/probe_arco_rosbag_sqlite.py /workspace/data/arco/*.zip
 python3 scripts/probe_multilidar_download_links.py
-python3 experiments/make_qualitative_video.py --trial-id 3 --include-depth --include-sensors
 \end{lstlisting}
+
+\subsection{Đối chiếu yêu cầu bài toán}
+\begin{table}[H]
+\centering
+\scriptsize
+\caption{Đối chiếu checklist đề bài với phạm vi đã triển khai.}
+\begin{tabularx}{0.98\linewidth}{>{\bfseries}p{2.9cm} X X}
+\toprule
+Yêu cầu & Đã thực hiện & Ghi chú/phạm vi \\
+\midrule
+Dữ liệu camera/radar/LiDAR & RGB, radar, IMU và OptiTrack của ODA; ARCO/Multi-LiDAR được probe ngoài ODA. & ODA không phải benchmark LiDAR chính; LiDAR/point cloud dùng để chứng minh hướng stress-test. \\
+Phát hiện vật cản & Monocular relative depth, radar FFT/peak/energy, clearance label từ ground truth. & Chưa làm object detection, point-cloud segmentation hoặc full Range-Doppler tracking. \\
+Biểu diễn vật cản & Safety circle, safety boundary và occupancy grid cho A*. & Chưa dùng bounding box/voxel; phù hợp với metadata hình học của ODA. \\
+Lập kế hoạch tránh vật cản & A* search, RRT/RRT* sampling-based, MPPI optimization-based/sampling optimal control. & MPC/ROS controller chưa đưa vào để giữ pipeline nhẹ và tái lập nhanh. \\
+Đánh giá & Collision, safety violation, min clearance, path length, smoothness heading-change, computation time. & Tính khả thi động học mới ở mức proxy; jerk/acceleration là hướng mở rộng. \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
 \section{Đánh giá hiệu quả}
 \begin{table}[H]
