@@ -53,15 +53,12 @@ def _to_float(value: str) -> float | None:
     return float(value)
 
 
-def read_trial_overview(dataset_dir: str | Path) -> dict[str, TrialInfo]:
-    """Read and group ``trial_overview.csv`` by sequence ID."""
+def trial_infos_from_rows(rows: Iterable[dict[str, str]]) -> dict[str, TrialInfo]:
+    """Group raw ``trial_overview.csv`` rows by sequence ID."""
 
-    root = dataset_root(dataset_dir)
-    overview_path = root / "trial_overview.csv"
     grouped: dict[str, list[dict[str, str]]] = {}
-    with overview_path.open(newline="") as f:
-        for row in csv.DictReader(f):
-            grouped.setdefault(row["Sequence"], []).append(row)
+    for row in rows:
+        grouped.setdefault(row["Sequence"], []).append(row)
 
     trials: dict[str, TrialInfo] = {}
     for sequence, rows in grouped.items():
@@ -86,6 +83,15 @@ def read_trial_overview(dataset_dir: str | Path) -> dict[str, TrialInfo]:
             obstacles=tuple(obstacles),
         )
     return trials
+
+
+def read_trial_overview(dataset_dir: str | Path) -> dict[str, TrialInfo]:
+    """Read and group ``trial_overview.csv`` by sequence ID."""
+
+    root = dataset_root(dataset_dir)
+    overview_path = root / "trial_overview.csv"
+    with overview_path.open(newline="") as f:
+        return trial_infos_from_rows(csv.DictReader(f))
 
 
 def available_trial_ids(dataset_dir: str | Path) -> list[str]:

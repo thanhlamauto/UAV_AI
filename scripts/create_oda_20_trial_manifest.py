@@ -5,22 +5,34 @@ from __future__ import annotations
 
 import argparse
 import csv
+import io
+import os
 import sys
+import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from src.oda_io import dataset_root, read_trial_overview
+from src.oda_io import dataset_root, read_trial_overview, trial_infos_from_rows
 
 
 CORRUPTED = {"1306", "1321", "1344"}
+ODA_FULL_ZIP_NAME = "Dupeyroux_et_al_2021_ODA_DATASET_Full.zip"
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataset-root", default="data/raw/ODA_Dataset/dataset")
+    parser.add_argument(
+        "--zip-path",
+        default=None,
+        help=(
+            "Optional full ODA ZIP path. Used to read dataset/trial_overview.csv "
+            "when the dataset has not been extracted yet."
+        ),
+    )
     parser.add_argument("--output", default="outputs/tables/target_20_trials_manifest.csv")
     parser.add_argument("--one-obstacle", type=int, default=10)
     parser.add_argument("--two-obstacle", type=int, default=10)
@@ -33,9 +45,75 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def normalized_member_name(name: str) -> str:
+    parts = Path(name).parts
+    if "dataset" in parts:
+        idx = parts.index("dataset")
+        return "/".join(parts[idx:])
+    return name
+
+
+def candidate_zip_paths(explicit_path: str | None) -> list[Path]:
+    candidates: list[Path] = []
+    if explicit_path:
+        candidates.append(Path(explicit_path))
+    env_path = os.environ.get("ODA_FULL_ZIP")
+    if env_path:
+        candidates.append(Path(env_path))
+    candidates.extend(
+        [
+            Path("/workspace/data") / ODA_FULL_ZIP_NAME,
+            Path("data") / ODA_FULL_ZIP_NAME,
+            Path("data/raw") / ODA_FULL_ZIP_NAME,
+        ]
+    )
+
+    deduped = []
+    seen = set()
+    for path in candidates:
+        key = str(path)
+        if key not in seen:
+            deduped.append(path)
+            seen.add(key)
+    return deduped
+
+
+def read_trial_overview_from_zip(zip_path: Path):
+    with zipfile.ZipFile(zip_path) as zf:
+        matches = [
+            info
+            for info in zf.infolist()
+            if normalized_member_name(info.filename) == "dataset/trial_overview.csv"
+        ]
+        if not matches:
+            raise FileNotFoundError(
+                f"dataset/trial_overview.csv was not found inside {zip_path}"
+            )
+        with zf.open(matches[0]) as raw:
+            text = io.TextIOWrapper(raw, newline="")
+            return trial_infos_from_rows(csv.DictReader(text))
+
+
+def load_trial_overview(dataset_dir: Path, zip_path: str | None):
+    overview_path = dataset_dir / "trial_overview.csv"
+    if overview_path.exists():
+        return read_trial_overview(dataset_dir)
+
+    for candidate in candidate_zip_paths(zip_path):
+        if candidate.exists():
+            print(f"Reading trial_overview.csv from {candidate}")
+            return read_trial_overview_from_zip(candidate)
+
+    checked = ", ".join(str(path) for path in candidate_zip_paths(zip_path))
+    raise FileNotFoundError(
+        "trial_overview.csv is not available locally and no full ODA ZIP was found. "
+        f"Checked: {checked}"
+    )
+
+
 def main() -> None:
     args = parse_args()
-    trials = read_trial_overview(dataset_root(args.dataset_root))
+    trials = load_trial_overview(dataset_root(args.dataset_root), args.zip_path)
     selected = []
     selected_ids = set()
     for obstacle_count, wanted in [(1, args.one_obstacle), (2, args.two_obstacle)]:

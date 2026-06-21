@@ -55,6 +55,7 @@ scripts/download_oda_full_zip.sh \
   /workspace/data/Dupeyroux_et_al_2021_ODA_DATASET_Full.zip
 
 python3 scripts/create_oda_20_trial_manifest.py \
+  --zip-path /workspace/data/Dupeyroux_et_al_2021_ODA_DATASET_Full.zip \
   --output outputs/tables/target_20_trials_manifest.csv
 
 python3 scripts/extract_oda_trials_from_full_zip.py \
