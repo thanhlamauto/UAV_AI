@@ -1,0 +1,16 @@
+numpy
+pandas
+matplotlib
+scipy
+opencv-python
+tqdm
+imageio
+imageio-ffmpeg
+torch
+torchvision
+transformers
+accelerate
+scikit-learn
+optimum-onnx
+onnx
+onnxruntime-gpu==1.23.2
