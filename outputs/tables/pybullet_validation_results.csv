@@ -1,5 +1,5 @@
 method,cases,collision_rate,safety_violation_rate,mean_min_clearance_m,mean_path_length_m,mean_smoothness,mean_compute_time_ms,success_rate,latency_violation_rate,sim_backend,sim_backend_reason
-filtered_bc_mppi,80,0.6375,0.5375,0.5584,6.4767,0.091489,11.2235,0.0,0.45,gym-pybullet-drones,available
-mppi,80,0.0,0.0875,0.6304,4.0227,0.005272,12.3144,0.1625,0.125,gym-pybullet-drones,available
-plain_bc_mppi,80,0.3625,0.7125,0.3645,5.0492,0.038052,10.0407,0.0,0.475,gym-pybullet-drones,available
-rrt_star,80,0.0,0.6375,0.4836,3.9472,0.003452,556.3392,0.1625,0.35,gym-pybullet-drones,available
+filtered_bc_mppi,20,0.0,0.15,0.7197,8.3951,0.013658,14.8292,0.0,0.0,gym-pybullet-drones,available
+mppi,20,0.0,0.0,0.5241,4.8105,0.00175,15.4791,0.65,0.0,gym-pybullet-drones,available
+plain_bc_mppi,20,0.15,0.35,0.4444,6.0641,0.019675,14.3198,0.0,0.1,gym-pybullet-drones,available
+rrt_star,20,0.0,0.1,0.3918,4.7342,0.000903,603.5817,0.75,0.0,gym-pybullet-drones,available

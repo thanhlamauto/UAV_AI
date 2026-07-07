@@ -1,5 +1,5 @@
 method,offline_score,sim_score,offline_rank,sim_rank,spearman_rho,top2_agreement
-rrt_star,2.719798,-0.85512,4,2,0.2,0.333333
-mppi,3.353778,0.540293,1,1,0.2,0.333333
-plain_bc_mppi,2.884901,-2.81652,3,3,0.2,0.333333
-filtered_bc_mppi,3.270545,-3.532662,2,4,0.2,0.333333
+rrt_star,2.719798,1.994109,4,2,0.4,0.333333
+mppi,3.353778,2.20431,1,1,0.4,0.333333
+plain_bc_mppi,2.884901,-1.00996,3,4,0.4,0.333333
+filtered_bc_mppi,3.270545,0.127435,2,3,0.4,0.333333
