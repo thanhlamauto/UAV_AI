@@ -1,5 +1,5 @@
 method,cases,collision_rate,safety_violation_rate,mean_min_clearance_m,mean_path_length_m,mean_smoothness,mean_compute_time_ms,success_rate,latency_violation_rate,sim_backend,sim_backend_reason
-filtered_bc_mppi,80,0.0,0.6,0.6592,13.165,0.08939,9.8722,0.7,0.3,kinematic_fallback,ModuleNotFoundError: No module named 'gym_pybullet_drones'
-mppi,80,0.0,0.0,0.6717,5.2603,0.002499,14.055,0.95,0.05,kinematic_fallback,ModuleNotFoundError: No module named 'gym_pybullet_drones'
-plain_bc_mppi,80,0.15,0.6,0.415,10.2874,0.034059,9.7488,0.5125,0.4875,kinematic_fallback,ModuleNotFoundError: No module named 'gym_pybullet_drones'
-rrt_star,80,0.0,0.0,0.5191,5.1381,0.002232,583.9885,0.75,0.25,kinematic_fallback,ModuleNotFoundError: No module named 'gym_pybullet_drones'
+filtered_bc_mppi,80,0.6375,0.5375,0.5584,6.4767,0.091489,11.2235,0.0,0.45,gym-pybullet-drones,available
+mppi,80,0.0,0.0875,0.6304,4.0227,0.005272,12.3144,0.1625,0.125,gym-pybullet-drones,available
+plain_bc_mppi,80,0.3625,0.7125,0.3645,5.0492,0.038052,10.0407,0.0,0.475,gym-pybullet-drones,available
+rrt_star,80,0.0,0.6375,0.4836,3.9472,0.003452,556.3392,0.1625,0.35,gym-pybullet-drones,available
