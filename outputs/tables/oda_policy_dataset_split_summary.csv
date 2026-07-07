@@ -1,0 +1,4 @@
+split,trials,samples
+train,210,10290
+val,45,2205
+test,45,2205
