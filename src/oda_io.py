@@ -8,6 +8,7 @@ keep that convention explicit so metrics and plots match the upstream examples.
 from __future__ import annotations
 
 import csv
+import warnings
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable
@@ -186,13 +187,85 @@ def _fft_radar(real: np.ndarray, imag: np.ndarray) -> np.ndarray:
     return np.abs(spectrum)
 
 
-def load_radar_spectra(dataset_dir: str | Path, sequence: str | int) -> dict[str, np.ndarray]:
-    """Load radar CSV and compute first-chirp FFT magnitudes for RX1/RX2.
+def _range_doppler_map(
+    real_block: np.ndarray,
+    imag_block: np.ndarray,
+    num_chirps: int,
+    zero_pad_fast_time: bool = True,
+) -> np.ndarray:
+    """Compute a Level-3 range-Doppler magnitude map from one RX block.
+
+    Level 1 in this project is the old first-chirp 1D range-profile feature
+    extractor. Level 3 uses all chirps in one sweep: range FFT along fast time,
+    then Doppler FFT along slow time. This is still compact range-Doppler
+    feature extraction; it is not CFAR, angle-of-arrival, tracking, or radar
+    occupancy mapping.
+    """
+
+    if num_chirps < 2:
+        raise ValueError("range-Doppler extraction needs at least two chirps")
+    if len(real_block) != len(imag_block) or len(real_block) % num_chirps != 0:
+        raise ValueError("radar block length is not divisible by num_chirps")
+
+    chirp_len = int(len(real_block) // num_chirps)
+    fft_len = 2 * chirp_len if zero_pad_fast_time else chirp_len
+    samples = np.asarray(real_block, dtype=float).reshape(num_chirps, chirp_len) + 1j * np.asarray(
+        imag_block, dtype=float
+    ).reshape(num_chirps, chirp_len)
+    padded = np.zeros((num_chirps, fft_len), dtype=np.complex64)
+    padded[:, :chirp_len] = samples
+    range_fft = np.fft.fft(padded, axis=1)
+    positive_range = np.fft.fftfreq(fft_len, 1.0) >= 0
+    doppler_fft = np.fft.fftshift(np.fft.fft(range_fft[:, positive_range], axis=0), axes=0)
+    return np.abs(doppler_fft).astype(np.float32)
+
+
+def _range_doppler_features(rd_map: np.ndarray) -> dict[str, float | int]:
+    rd = np.asarray(rd_map, dtype=float)
+    if rd.ndim != 2 or rd.size == 0:
+        raise ValueError("range-Doppler map must be a non-empty 2D array")
+
+    peak_flat = int(np.argmax(rd))
+    doppler_bin, range_bin = np.unravel_index(peak_flat, rd.shape)
+    weights = rd**2
+    energy = float(np.mean(weights))
+    near_cols = max(1, int(np.ceil(rd.shape[1] * 0.25)))
+    near_energy = float(np.mean(weights[:, :near_cols]))
+    total = float(np.sum(weights))
+
+    if total <= 1e-12:
+        doppler_spread = 0.0
+        range_spread = 0.0
+    else:
+        doppler_axis = np.arange(rd.shape[0], dtype=float)[:, None]
+        range_axis = np.arange(rd.shape[1], dtype=float)[None, :]
+        doppler_mean = float(np.sum(weights * doppler_axis) / total)
+        range_mean = float(np.sum(weights * range_axis) / total)
+        doppler_spread = float(np.sqrt(np.sum(weights * (doppler_axis - doppler_mean) ** 2) / total))
+        range_spread = float(np.sqrt(np.sum(weights * (range_axis - range_mean) ** 2) / total))
+
+    return {
+        "radar_rd_peak": float(rd[doppler_bin, range_bin]),
+        "radar_rd_range_bin": int(range_bin),
+        "radar_rd_doppler_bin": int(doppler_bin),
+        "radar_rd_energy": energy,
+        "radar_rd_near_energy": near_energy,
+        "radar_rd_doppler_spread": doppler_spread,
+        "radar_rd_range_spread": range_spread,
+    }
+
+
+def load_radar_spectra(
+    dataset_dir: str | Path,
+    sequence: str | int,
+    num_chirps: int = 16,
+) -> dict[str, np.ndarray]:
+    """Load radar CSV and compute Level-1 and Level-3 radar features.
 
     The ODA CSV radar rows contain four blocks after timestamp:
     RX1 real, RX1 imaginary, RX2 real, RX2 imaginary.  Following the upstream
-    visualization script, this helper uses the first chirp from each sweep and
-    zero pads it before FFT.
+    visualization script, Level-1 keeps the backward-compatible first-chirp FFT
+    magnitudes. Level-3 additionally uses all chirps for range-Doppler features.
     """
 
     root = dataset_root(dataset_dir)
@@ -201,7 +274,10 @@ def load_radar_spectra(dataset_dir: str | Path, sequence: str | int) -> dict[str
     time_s: list[float] = []
     mag_rx1: list[np.ndarray] = []
     mag_rx2: list[np.ndarray] = []
+    rd_mag: list[np.ndarray] = []
+    rd_feature_rows: list[dict[str, float | int]] = []
     freq_axis: np.ndarray | None = None
+    rd_fallback_warned = False
 
     with path.open(newline="") as f:
         reader = csv.reader(f)
@@ -238,16 +314,40 @@ def load_radar_spectra(dataset_dir: str | Path, sequence: str | int) -> dict[str
             mag_rx1.append(_fft_radar(rx1_re, rx1_im)[positive])
             mag_rx2.append(_fft_radar(rx2_re, rx2_im)[positive])
 
+            try:
+                rx1_real_block = np.asarray(row[1 : 1 + block_len], dtype=float)
+                rx1_imag_block = np.asarray(row[1 + block_len : 1 + 2 * block_len], dtype=float)
+                rx2_real_block = np.asarray(row[1 + 2 * block_len : 1 + 3 * block_len], dtype=float)
+                rx2_imag_block = np.asarray(row[1 + 3 * block_len : 1 + 4 * block_len], dtype=float)
+                combined_rd = _range_doppler_map(rx1_real_block, rx1_imag_block, num_chirps=num_chirps)
+                combined_rd += _range_doppler_map(rx2_real_block, rx2_imag_block, num_chirps=num_chirps)
+            except Exception as exc:
+                if not rd_fallback_warned:
+                    warnings.warn(
+                        f"Falling back to Level-1 radar features for {path}: {exc}",
+                        RuntimeWarning,
+                        stacklevel=2,
+                    )
+                    rd_fallback_warned = True
+                combined_rd = (_fft_radar(rx1_re, rx1_im)[positive] + _fft_radar(rx2_re, rx2_im)[positive])[
+                    None, :
+                ].astype(np.float32)
+            rd_mag.append(combined_rd)
+            rd_feature_rows.append(_range_doppler_features(combined_rd))
+
     if not time_s or freq_axis is None:
         raise ValueError(f"No radar rows found in {path}")
 
     time = np.asarray(time_s, dtype=float)
     time = time - time[0]
+    rd_keys = list(rd_feature_rows[0].keys())
     return {
         "time_s": time,
         "freq": freq_axis,
         "mag_rx1": np.vstack(mag_rx1),
         "mag_rx2": np.vstack(mag_rx2),
+        "rd_mag": np.stack(rd_mag, axis=0),
+        **{key: np.asarray([row[key] for row in rd_feature_rows], dtype=float) for key in rd_keys},
     }
 
 

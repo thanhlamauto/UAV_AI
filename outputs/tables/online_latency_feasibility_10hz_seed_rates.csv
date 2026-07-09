@@ -1,0 +1,6 @@
+speed_mps,cases,safe_pct,violation_pct,collision_pct,mean_total_delay_ms,mean_delay_distance_m,mean_min_body_clearance_m,frontend_to_occupancy_ms,sensor_period_ms
+2.0,8,100.0,0.0,0.0,223.513,0.447,0.2871,6.146,100.0
+3.0,8,87.5,12.5,0.0,374.714,1.1241,0.4367,6.146,100.0
+4.0,8,62.5,12.5,25.0,369.189,1.4767,0.187,6.146,100.0
+5.0,8,0.0,100.0,0.0,316.007,1.58,0.1359,6.146,100.0
+6.0,8,0.0,0.0,100.0,313.528,1.8812,-0.0763,6.146,100.0

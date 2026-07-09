@@ -1,0 +1,27 @@
+{
+  "name": "uav-oda-obstacle-avoidance",
+  "version": "1.0.0",
+  "description": "This folder is the starting point for a focused UAV obstacle avoidance project.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thanhlamauto/UAV_AI.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/thanhlamauto/UAV_AI/issues"
+  },
+  "homepage": "https://github.com/thanhlamauto/UAV_AI#readme",
+  "dependencies": {
+    "playwright-core": "^1.61.0"
+  }
+}

@@ -1,0 +1,21 @@
+category,metric,value,defense_claim
+ODA benchmark,target_trials_ready,300/300,Full target ODA benchmark is ready.
+ODA benchmark,planner_metric_rows,2100,Seven planner/human methods were evaluated on 300 trials.
+Planner,astar_collision_rate,0.0000,A* is collision-free in the current 2D geometric benchmark.
+Planner,astar_safety_violation_rate,0.0000,A* has no safety-distance violation in the current 2D benchmark.
+Planner,rrt_collision_rate,0.0000,RRT is collision-free in the current 2D geometric benchmark.
+Planner,rrt_safety_violation_rate,0.0000,RRT has no safety-distance violation in the current 2D benchmark.
+Planner,mppi_collision_rate,0.0000,MPPI is collision-free in the current 2D geometric benchmark.
+Planner,mppi_safety_violation_rate,0.0033,MPPI has a small residual safety-violation rate but the highest mean clearance.
+Perception-risk,depth_radar_imu_recall_tuned_risk_recall,0.6667,Depth/radar/IMU can be tuned toward early risk recall.
+Perception-risk,depth_radar_imu_recall_tuned_balanced_accuracy,0.6631,Recall tuning trades accuracy for better future-risk detection.
+Depth,depth_anything_v2_small_wall_time_s_per_frame,0.063874,Depth Anything V2 Small batch inference is practical for offline feature generation.
+Depth,depth_anything_v2_small_infer_time_s_per_frame,0.017378,Model inference is faster than end-to-end video/cache processing.
+Perception-to-planner,contract_sources,5,LiDAR bbox/depth/fused perception outputs all produce planner-consumable maps.
+Perception-to-planner,matrix_cases,15,Five perception sources x three planners pass collision-free path checks after inflation.
+3D demo,webgl_render_desktop,PASS,Three.js demo renders a nonblank scene on desktop.
+3D demo,webgl_render_mobile,PASS,Three.js demo renders a nonblank scene on mobile.
+Full 3D ESDF,synthetic_esdf_mppi_collision,0,3D ESDF/MPPI synthetic indoor path is collision-free.
+Full 3D ESDF,synthetic_esdf_mppi_min_esdf_distance_m,0.6783,3D MPPI keeps positive ESDF clearance in the demo map.
+Scope,tensorrt_engine_claim,not_claimed,TensorRT speedup is not claimed without a real engine build.
+Scope,px4_gazebo_closed_loop_claim,not_claimed,Full PX4/Gazebo closed-loop flight remains the next verifier.

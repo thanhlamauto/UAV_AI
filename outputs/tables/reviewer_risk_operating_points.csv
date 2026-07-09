@@ -1,0 +1,5 @@
+method,target_recall,threshold,risk_recall,false_negative_rate,precision,balanced_accuracy,pr_auc,ece,tp,tn,fp,fn
+ttc_distance_threshold,0.95,0.972285,0.953083,0.046917,0.603053,0.816158,0.784291,0.61362,711,991,468,35
+ttc_distance_threshold,0.99,0.962882,0.990617,0.009383,0.504437,0.746508,0.784291,0.61362,739,733,726,7
+small_mlp_risk_predictor,0.95,0.473925,0.950402,0.049598,0.703373,0.872734,0.885459,0.09394,709,1160,299,37
+small_mlp_risk_predictor,0.99,0.327247,0.990617,0.009383,0.618928,0.83938,0.885459,0.09394,739,1004,455,7

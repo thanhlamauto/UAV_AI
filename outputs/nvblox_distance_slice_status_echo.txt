@@ -1,0 +1,2 @@
+data: '{"state":"planned","planner":"mppi","compute_time_ms":215.572,"min_distance_m":0.45,"safety_violation":false,"min_clearance_m":0...'
+---

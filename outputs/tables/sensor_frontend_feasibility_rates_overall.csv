@@ -1,0 +1,6 @@
+frontend,source,frontend_to_occupancy_ms,sensor_period_ms,max_speed_safe_rate_ge_50_mps,first_any_unsafe_speed_mps,first_collision_speed_mps
+bbox_cached_depth_mux_to_grid,Multi-LiDAR bbox + ODA cached depth,3.103,200.0,3.0,3.0,4.0
+external_lidar_bbox_to_grid,Multi-LiDAR bbox CSV,0.017,100.0,4.0,5.0,6.0
+ideal_occupancy_esdf,synthetic_gt,6.146,100.0,4.0,3.0,4.0
+oda_cached_depth_to_grid,ODA RGB cached depth,2.72,200.0,3.0,4.0,4.0
+oda_depth_anything_to_grid,ODA RGB,66.594,200.0,3.0,3.0,4.0

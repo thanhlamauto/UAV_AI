@@ -36,10 +36,22 @@ Key takeaway: the geometric/planner benchmark is stable at 300 ODA trials. The s
 - ARCO stress probe downloaded/probed 3 ROS2 bag ZIP samples without ROS: 33 topic rows, 175997 messages.
 - Multi-LiDAR link probe found 27/27 SharePoint links require login, so it is documented as future/auth-needed stress data.
 
+## Local Audit On 2026-07-01
+
+- Progress-submission audit is complete: PDF, MP4 videos, screenshots, metrics tables and required artifacts are present/readable.
+- The local Three.js demo serves at `http://localhost:8765/`; automated render verification passes for desktop and mobile.
+- Perception-to-planner contract passes for LiDAR bbox, metric depth, relative predicted-depth proxy, bbox+relative-depth mux and bbox+cached-depth mux.
+- The perception/planner matrix passes for 5 perception sources x 3 planners (`astar`, `rrt`, `mppi`), with collision-free paths after inflation.
+- Python compile check passes for `src`, `experiments`, `scripts` and `ros2_ws/src/uav_oda_ros2_demo`.
+
 ## Files To Show
 
 - `reports/uav_oda_report.pdf`
+- `reports/uav_oda_progress_technical_report.pdf`
+- `outputs/defense_narrative.md`
 - `outputs/server_experiment_summary.md`
+- `outputs/tables/perception_to_planner_contract.csv`
+- `outputs/tables/perception_planner_matrix.csv`
 - `outputs/arco_rosbag_stress_probe.md`
 - `outputs/multilidar_download_probe.md`
 - `docs/depth_inference_optimization.md`

@@ -22,8 +22,8 @@ Nếu dùng Overleaf, upload cả thư mục `reports/` và `outputs/figures/`, 
 Cần sửa nhanh các macro ở đầu file:
 
 ```tex
-\newcommand{\SinhVien}{Nguyễn Thành Lâm}
-\newcommand{\Mentor}{[Họ và tên mentor]}
-\newcommand{\DonViMentor}{[Đơn vị mentor hướng dẫn]}
-\newcommand{\EmailMentor}{[email mentor hướng dẫn]}
+\newcommand{\SinhVien}{Nguyễn Thanh Lâm}
+\newcommand{\Mentor}{Hoàng Công Phát}
+\newcommand{\DonViMentor}{Viettel High Tech}
+\newcommand{\EmailMentor}{}
 ```

@@ -1,0 +1,2 @@
+data: '{"state":"planned","planner":"mppi_3d_esdf_pointcloud","compute_time_ms":18.433,"grid_shape":[43,33,29],"known_voxels":41151,"resolution_m":0.12,"origin":[-0.96,-1.92,-1.2],"upper":[4.08,1.92,2.16],"esdf_z_span_m":3.36,"source_mode":"pointcloud_occupancy_esdf","min_esdf_distance_m":0.5648,"safety_violation":false,"safety_radius_m":0.45,"path_length_m":2.9033,"altitude_change_m":0.2499,"smoothness":2.3e-05}'
+---

@@ -1,0 +1,9 @@
+dataset,sample,bag,topic,frame_offset,timestamp_ns,height,width,raw_points,foreground_points,ground_z_estimate_m,cluster_count,largest_cluster_points,voxel_size_m,x_min_m,ground_margin_m,method
+Multi-LiDAR Multi-UAV,HolybroStdn01_ouster,HolybroStdn01.from_hf.bag,/ouster/points,0,1690899086448844819,64,1024,57769,17591,-0.9179,10,380,0.35,0.5,0.25,ros1_pointcloud2_ground_percentile_voxel_connected_components
+Multi-LiDAR Multi-UAV,HolybroStdn01_ouster,HolybroStdn01.from_hf.bag,/ouster/points,90,1690899090946989988,64,1024,57843,17600,-0.919,9,392,0.35,0.5,0.25,ros1_pointcloud2_ground_percentile_voxel_connected_components
+Multi-LiDAR Multi-UAV,HolybroStdn01_ouster,HolybroStdn01.from_hf.bag,/ouster/points,180,1690899095447979584,64,1024,57894,17590,-0.9178,9,403,0.35,0.5,0.25,ros1_pointcloud2_ground_percentile_voxel_connected_components
+Multi-LiDAR Multi-UAV,HolybroStdn01_ouster,HolybroStdn01.from_hf.bag,/ouster/points,270,1690899099946043645,64,1024,57805,17557,-0.9174,7,379,0.35,0.5,0.25,ros1_pointcloud2_ground_percentile_voxel_connected_components
+Multi-LiDAR Multi-UAV,HolybroStdn01_ouster,HolybroStdn01.from_hf.bag,/ouster/points,360,1690899104446886580,64,1024,57863,17577,-0.9173,9,392,0.35,0.5,0.25,ros1_pointcloud2_ground_percentile_voxel_connected_components
+Multi-LiDAR Multi-UAV,HolybroStdn01_ouster,HolybroStdn01.from_hf.bag,/ouster/points,450,1690899108946058565,64,1024,57927,17600,-0.9176,8,388,0.35,0.5,0.25,ros1_pointcloud2_ground_percentile_voxel_connected_components
+Multi-LiDAR Multi-UAV,HolybroStdn01_ouster,HolybroStdn01.from_hf.bag,/ouster/points,540,1690899113446180363,64,1024,57727,17620,-0.9203,8,388,0.35,0.5,0.25,ros1_pointcloud2_ground_percentile_voxel_connected_components
+Multi-LiDAR Multi-UAV,HolybroStdn01_ouster,HolybroStdn01.from_hf.bag,/ouster/points,631,1690899117997660568,64,1024,57710,17615,-0.9187,9,411,0.35,0.5,0.25,ros1_pointcloud2_ground_percentile_voxel_connected_components

@@ -1,0 +1,4 @@
+planner,cases,safe_count,violation_count,collision_count,failure_count,safe_rate_pct,violation_rate_pct,collision_rate_pct,mean_speed_mps,mean_total_delay_ms,mean_delay_distance_m,mean_planner_compute_ms,mean_costmap_update_ms,mean_min_clearance_m
+mppi,128,113,15,0,0,88.28,11.72,0.0,0.9866,169.684,0.1945,31.025,3.658,1.1574
+rrt,128,115,1,12,12,89.84,0.78,9.38,0.9866,149.933,0.1427,11.233,3.7,1.1473
+rrt_star,128,113,1,14,14,88.28,0.78,10.94,0.9866,181.624,0.1724,42.911,3.714,1.1437

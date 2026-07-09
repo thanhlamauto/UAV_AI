@@ -23,16 +23,39 @@ import numpy as np
 
 
 FEATURE_GROUPS = {
-    "radar": ["radar_peak", "radar_peak_bin", "radar_energy"],
+    "radar": [
+        "radar_rd_peak",
+        "radar_rd_range_bin",
+        "radar_rd_doppler_bin",
+        "radar_rd_energy",
+        "radar_rd_near_energy",
+        "radar_rd_doppler_spread",
+        "radar_rd_range_spread",
+    ],
     "camera_depth": ["depth_min", "depth_p10", "depth_median"],
-    "radar_imu": ["radar_peak", "radar_peak_bin", "radar_energy", "imu_acc_norm", "imu_gyro_norm"],
+    "radar_level1": ["radar_peak", "radar_peak_bin", "radar_energy"],
+    "radar_imu": [
+        "radar_rd_peak",
+        "radar_rd_range_bin",
+        "radar_rd_doppler_bin",
+        "radar_rd_energy",
+        "radar_rd_near_energy",
+        "radar_rd_doppler_spread",
+        "radar_rd_range_spread",
+        "imu_acc_norm",
+        "imu_gyro_norm",
+    ],
     "depth_radar_imu": [
         "depth_min",
         "depth_p10",
         "depth_median",
-        "radar_peak",
-        "radar_peak_bin",
-        "radar_energy",
+        "radar_rd_peak",
+        "radar_rd_range_bin",
+        "radar_rd_doppler_bin",
+        "radar_rd_energy",
+        "radar_rd_near_energy",
+        "radar_rd_doppler_spread",
+        "radar_rd_range_spread",
         "imu_acc_norm",
         "imu_gyro_norm",
     ],
@@ -388,6 +411,9 @@ def main() -> None:
     rows = read_rows(Path(args.features))
     labels = labels_from_rows(rows, args.target)
     train_trials, test_trials = trial_split(rows, args.test_fraction)
+    print("Feature schema:")
+    for group in args.groups:
+        print(f"  {group}: {', '.join(FEATURE_GROUPS[group])}")
     output_rows = [
         run_group(
             group_name=group,

@@ -1,0 +1,5 @@
+method,trials,mean_path_length_3d_m,p95_path_length_3d_m,mean_smoothness_3d,p95_smoothness_3d,mean_max_turn_angle_rad,mean_curvature_energy,mean_jerk_energy,mean_planner_compute_time_ms,metric_scope
+human,16,6.8853,8.9322,0.115282,0.418342,1.72718,144.443629,1135181.167679,0.0,3d_arclength_resampled_path_geometry_no_velocity_command
+rrt,16,5.832,7.308,0.001332,0.008254,0.247754,1.851439,2098.575255,1.8606,3d_arclength_resampled_path_geometry_no_velocity_command
+rrt_star,16,5.7257,7.1046,6.9e-05,0.000313,0.046285,0.088237,171.803452,394.7267,3d_arclength_resampled_path_geometry_no_velocity_command
+mppi,16,5.7448,7.1663,9.4e-05,0.000384,0.076541,0.126078,270.801473,72.0097,3d_arclength_resampled_path_geometry_no_velocity_command

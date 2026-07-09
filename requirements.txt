@@ -1,4 +1,5 @@
 numpy
+scipy
 matplotlib
 imageio
 imageio-ffmpeg
@@ -6,3 +7,4 @@ torch
 torchvision
 transformers
 safetensors
+pytest

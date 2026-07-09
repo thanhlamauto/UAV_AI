@@ -1,0 +1,7 @@
+bag,sensor,frames,mean_raw_points,mean_foreground_points,mean_clusters,total_3d_bboxes
+TelloOut02,Ouster,8,43209.38,6384.62,3.25,26
+TelloOut02,Mid360,8,1992.0,502.62,1.12,9
+TelloOut02,Avia,8,2400.0,1748.0,1.62,13
+Tello03,Ouster,8,58044.12,17529.5,7.62,61
+Tello03,Mid360,8,2004.0,1173.0,5.38,43
+Tello03,Avia,8,2400.0,1042.38,5.62,45

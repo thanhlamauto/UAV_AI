@@ -1,0 +1,5 @@
+stage,name,event,compute_time_ms,min_esdf_distance_m,safety_violation,planned_waypoints,occupied_voxels
+0,Baseline,Nominal indoor corridor,40.802,0.428,0,64,2152
+1,Event 1,Person suddenly crosses the flight corridor,26.521,0.4588,0,64,2242
+2,Event 2,Door panel narrows the passage,29.402,0.4197,0,64,2350
+3,Event 3,Cart/box appears near the old route,32.926,0.478,0,64,2590

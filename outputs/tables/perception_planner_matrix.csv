@@ -1,0 +1,16 @@
+source,planner,occupied_cells,width,height,path_waypoints,path_length_m,collision_free_after_inflation
+lidar_bbox_csv,astar,626,88,72,85,18.45685424949238,1
+lidar_bbox_csv,rrt,626,88,72,43,20.886248264124717,1
+lidar_bbox_csv,mppi,626,88,72,60,18.222209766317192,1
+metric_depth_image,astar,269,80,80,61,6.579898987322333,1
+metric_depth_image,rrt,269,80,80,9,7.24075988783944,1
+metric_depth_image,mppi,269,80,80,60,6.518589085762596,1
+relative_predicted_depth_proxy,astar,30,80,80,66,6.872792206135786,1
+relative_predicted_depth_proxy,rrt,30,80,80,5,7.174211455496095,1
+relative_predicted_depth_proxy,mppi,30,80,80,60,6.823681150325892,1
+lidar_bbox_plus_relative_depth_mux,astar,638,133,75,127,27.436753236814713,1
+lidar_bbox_plus_relative_depth_mux,rrt,638,133,75,67,32.97850201836589,1
+lidar_bbox_plus_relative_depth_mux,mppi,638,133,75,60,26.848734647456737,1
+lidar_bbox_plus_cached_depth_mux,astar,666,133,75,128,27.802438661763954,1
+lidar_bbox_plus_cached_depth_mux,rrt,666,133,75,78,32.67745512385179,1
+lidar_bbox_plus_cached_depth_mux,mppi,666,133,75,60,27.18797568855419,1

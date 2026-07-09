@@ -27,6 +27,13 @@ FIELDNAMES = [
     "radar_peak",
     "radar_peak_bin",
     "radar_energy",
+    "radar_rd_peak",
+    "radar_rd_range_bin",
+    "radar_rd_doppler_bin",
+    "radar_rd_energy",
+    "radar_rd_near_energy",
+    "radar_rd_doppler_spread",
+    "radar_rd_range_spread",
     "imu_acc_norm",
     "imu_gyro_norm",
     "clearance_m",
@@ -67,6 +74,7 @@ def read_ready_sequences(path: Path) -> list[str]:
 def find_depth_cache(depth_root: Path, sequence: str, fps: float) -> Path | None:
     candidates = [
         depth_root / sequence / f"depth_{fps:g}fps.npz",
+        depth_root / sequence / f"metric_depth_{fps:g}fps.npz",
         Path("data/processed") / f"depth_sample_{sequence}_{fps:g}fps.npz",
     ]
     for candidate in candidates:
@@ -114,11 +122,14 @@ def build_trial_rows(
 
     with np.load(depth_path, allow_pickle=False) as depth_cache:
         depth_times = np.asarray(depth_cache["times"], dtype=float)
-        depth_u8 = np.asarray(depth_cache["depth_u8"], dtype=np.uint8)
+        if "depth_m" in depth_cache:
+            depth_images = np.asarray(depth_cache["depth_m"], dtype=np.float32)
+        else:
+            depth_images = np.asarray(depth_cache["depth_u8"], dtype=np.float32)
 
     valid = depth_times <= float(optitrack["time_s"][-1])
     depth_times = depth_times[valid]
-    depth_u8 = depth_u8[valid]
+    depth_images = depth_images[valid]
     if len(depth_times) == 0:
         return []
 
@@ -141,13 +152,14 @@ def build_trial_rows(
         danger_clearance_m=danger_clearance_m,
     )
 
+    # Backward-compatible Level-1 radar features: first-chirp 1D range profile.
     radar_mag = np.asarray(radar["mag_rx1"], dtype=float) + np.asarray(radar["mag_rx2"], dtype=float)
     imu_acc_norm = np.linalg.norm(np.asarray(imu["accel_filt_mps2"], dtype=float), axis=1)
     imu_gyro_norm = np.linalg.norm(np.asarray(imu["gyro_filt_radps"], dtype=float), axis=1)
 
     rows: list[dict[str, object]] = []
     for i, t in enumerate(depth_times):
-        crop = center_crop(depth_u8[i], center_crop_fraction).astype(float)
+        crop = center_crop(depth_images[i], center_crop_fraction).astype(float)
         radar_i = nearest_index(radar["time_s"], float(t))
         imu_i = nearest_index(imu["time_s"], float(t))
         radar_row = radar_mag[radar_i]
@@ -161,6 +173,13 @@ def build_trial_rows(
                 "radar_peak": round(float(np.max(radar_row)), 4),
                 "radar_peak_bin": int(np.argmax(radar_row)),
                 "radar_energy": round(float(np.mean(radar_row**2)), 4),
+                "radar_rd_peak": round(float(radar["radar_rd_peak"][radar_i]), 4),
+                "radar_rd_range_bin": int(radar["radar_rd_range_bin"][radar_i]),
+                "radar_rd_doppler_bin": int(radar["radar_rd_doppler_bin"][radar_i]),
+                "radar_rd_energy": round(float(radar["radar_rd_energy"][radar_i]), 4),
+                "radar_rd_near_energy": round(float(radar["radar_rd_near_energy"][radar_i]), 4),
+                "radar_rd_doppler_spread": round(float(radar["radar_rd_doppler_spread"][radar_i]), 4),
+                "radar_rd_range_spread": round(float(radar["radar_rd_range_spread"][radar_i]), 4),
                 "imu_acc_norm": round(float(imu_acc_norm[imu_i]), 4),
                 "imu_gyro_norm": round(float(imu_gyro_norm[imu_i]), 4),
                 "clearance_m": round(float(clearance[i]), 4),

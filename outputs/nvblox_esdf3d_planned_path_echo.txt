@@ -1,0 +1,787 @@
+header:
+  stamp:
+    sec: 1782236860
+    nanosec: 467445813
+  frame_id: uav_lidar_frame
+poses:
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 0.15
+      y: 0.0
+      z: 1.2
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 0.2048849504517284
+      y: 0.0
+      z: 1.215115537844664
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 0.25978429054247815
+      y: 0.0
+      z: 1.2301787271971403
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 0.3147119709429039
+      y: 0.0
+      z: 1.2451382315979247
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 0.3696816120199895
+      y: 0.0
+      z: 1.2599427730171653
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 0.4247063459969498
+      y: 0.0
+      z: 1.2745411555277322
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 0.4797986587613525
+      y: 0.0
+      z: 1.2888823017178035
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 0.5349702314670546
+      y: 0.0
+      z: 1.3029153060624843
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 0.5902317825105464
+      y: 0.0
+      z: 1.316589509237648
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 0.6455929109893361
+      y: 0.0
+      z: 1.3298545970248496
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 0.701061943350274
+      y: 0.0
+      z: 1.3426607269993438
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 0.7566457855835153
+      y: 0.0
+      z: 1.354958685589394
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 0.8123497839795754
+      y: 0.0
+      z: 1.366700077322255
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 0.8681775981007391
+      y: 0.0
+      z: 1.3778375471153241
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 0.9241310901742177
+      y: 0.0
+      z: 1.388325035325276
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 0.9802102355370559
+      y: 0.0
+      z: 1.398118063943762
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 1.0364130589929832
+      y: 0.0
+      z: 1.4071740508541561
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 1.0927356019219787
+      y: 0.0
+      z: 1.4154526474899265
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 1.1491719246648366
+      y: 0.0
+      z: 1.4229160936336775
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 1.2057141480526794
+      y: 0.0
+      z: 1.429529581559661
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 1.2623525369523654
+      y: 0.0
+      z: 1.4352616203605324
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 1.3190756273683795
+      y: 0.0
+      z: 1.4400843902285776
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 1.3758703970276904
+      y: 0.0
+      z: 1.4439740757973296
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 1.43272247755715
+      y: 0.0
+      z: 1.4469111674908743
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 1.4896164044539923
+      y: 0.0
+      z: 1.4488807202460983
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 1.5465358991817533
+      y: 0.0
+      z: 1.4498725599977444
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 1.603464100818247
+      y: 0.0
+      z: 1.4498725599977447
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 1.660383595546008
+      y: 0.0
+      z: 1.4488807202460985
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 1.7172775224428503
+      y: 0.0
+      z: 1.4469111674908743
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 1.7741296029723101
+      y: 0.0
+      z: 1.4439740757973298
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 1.830924372631621
+      y: 0.0
+      z: 1.4400843902285774
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 1.8876474630476354
+      y: 0.0
+      z: 1.4352616203605322
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 1.9442858519473212
+      y: 0.0
+      z: 1.4295295815596611
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 2.0008280753351637
+      y: 0.0
+      z: 1.4229160936336775
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 2.057264398078022
+      y: 0.0
+      z: 1.4154526474899265
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 2.1135869410070174
+      y: 0.0
+      z: 1.407174050854156
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 2.1697897644629442
+      y: 0.0
+      z: 1.398118063943762
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 2.225868909825783
+      y: 0.0
+      z: 1.388325035325276
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 2.2818224018992614
+      y: 0.0
+      z: 1.3778375471153241
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 2.337650216020425
+      y: 0.0
+      z: 1.3667000773222553
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 2.393354214416485
+      y: 0.0
+      z: 1.354958685589394
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 2.4489380566497267
+      y: 0.0
+      z: 1.3426607269993438
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 2.5044070890106642
+      y: 0.0
+      z: 1.3298545970248496
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 2.5597682174894536
+      y: 0.0
+      z: 1.316589509237648
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 2.615029768532946
+      y: 0.0
+      z: 1.302915306062484
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 2.6702013412386476
+      y: 0.0
+      z: 1.2888823017178035
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 2.7252936540030506
+      y: 0.0
+      z: 1.2745411555277322
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 2.7803183879800106
+      y: 0.0
+      z: 1.2599427730171648
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 2.8352880290570965
+      y: 0.0
+      z: 1.2451382315979247
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 2.890215709457522
+      y: 0.0
+      z: 1.2301787271971403
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 2.9451150495482716
+      y: 0.0
+      z: 1.215115537844664
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1782236860
+      nanosec: 467445813
+    frame_id: uav_lidar_frame
+  pose:
+    position:
+      x: 3.0
+      y: 0.0
+      z: 1.2
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+---

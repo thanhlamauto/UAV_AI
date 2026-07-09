@@ -1,0 +1,4 @@
+sequence,frames,model_id,device,platform,machine,processor,duration_s,wall_seconds,inference_seconds,seconds_per_frame,inference_seconds_per_frame,output
+1,4,depth-anything/Depth-Anything-V2-Metric-Indoor-Small-hf,mps,macOS-26.1-arm64-arm-64bit-Mach-O,arm64,arm,2.0,4.1834,2.7671,1.045861,0.691767,data/processed/metric_depth_probe/1/metric_depth_2fps.npz
+2,4,depth-anything/Depth-Anything-V2-Metric-Indoor-Small-hf,mps,macOS-26.1-arm64-arm-64bit-Mach-O,arm64,arm,2.0,0.6177,0.2796,0.154414,0.069897,data/processed/metric_depth_probe/2/metric_depth_2fps.npz
+3,4,depth-anything/Depth-Anything-V2-Metric-Indoor-Small-hf,mps,macOS-26.1-arm64-arm-64bit-Mach-O,arm64,arm,2.0,0.6297,0.2829,0.157413,0.070729,data/processed/metric_depth_probe/3/metric_depth_2fps.npz

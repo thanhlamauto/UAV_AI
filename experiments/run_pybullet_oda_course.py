@@ -31,7 +31,19 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--speeds", nargs="*", type=float, default=[1.0, 2.0, 3.0, 4.0])
     parser.add_argument("--obstacle-radius", type=float, default=0.20)
     parser.add_argument("--safety-distance", type=float, default=0.50)
-    parser.add_argument("--reaction-delay-s", type=float, default=0.15)
+    parser.add_argument(
+        "--reaction-delay-s",
+        type=float,
+        default=0.15,
+        help="Backward-compatible single reaction delay in seconds.",
+    )
+    parser.add_argument(
+        "--reaction-delays-s",
+        nargs="*",
+        type=float,
+        default=None,
+        help="Optional delay sweep in seconds, e.g. 0 0.1 0.2 0.3. Overrides --reaction-delay-s.",
+    )
     parser.add_argument("--plain-model", default="outputs/models/plain_bc_mppi.npz")
     parser.add_argument("--filtered-model", default="outputs/models/filtered_bc_mppi.npz")
     parser.add_argument("--backend", choices=["auto", "kinematic", "gym-pybullet-drones"], default="auto")
@@ -262,6 +274,7 @@ def main() -> None:
     outputs = Path(args.outputs_dir)
     tables = outputs / "tables"
     backend, backend_reason = resolve_backend(args.backend)
+    reaction_delays = args.reaction_delays_s if args.reaction_delays_s is not None else [args.reaction_delay_s]
     plain_model, plain_mean, plain_std, plain_step = load_policy(args.plain_model)
     filtered_model, filtered_mean, filtered_std, filtered_step = load_policy(args.filtered_model)
 
@@ -278,22 +291,26 @@ def main() -> None:
                     row = evaluate_path_with_backend(method, spec, trajectory, compute_ms, backend, args)
                     row["sim_backend"] = backend
                     row["sim_backend_reason"] = backend_reason
-                    rows.append(latency_adjusted(row, speed, args.reaction_delay_s))
+                    for reaction_delay_s in reaction_delays:
+                        rows.append(latency_adjusted(dict(row), speed, reaction_delay_s))
                 except Exception as exc:
-                    rows.append(
-                        {
-                            "method": method,
-                            "sequence": spec.sequence,
-                            "speed_mps": speed,
-                            "sim_backend": backend,
-                            "sim_backend_reason": backend_reason,
-                            "collision": 1,
-                            "safety_violation": 1,
-                            "latency_violation": 1,
-                            "success": 0,
-                            "reason": str(exc),
-                        }
-                    )
+                    for reaction_delay_s in reaction_delays:
+                        rows.append(
+                            {
+                                "method": method,
+                                "sequence": spec.sequence,
+                                "speed_mps": speed,
+                                "reaction_delay_s": reaction_delay_s,
+                                "delay_distance_m": round(speed * reaction_delay_s, 4),
+                                "sim_backend": backend,
+                                "sim_backend_reason": backend_reason,
+                                "collision": 1,
+                                "safety_violation": 1,
+                                "latency_violation": 1,
+                                "success": 0,
+                                "reason": str(exc),
+                            }
+                        )
 
             for method, model, mean, std, max_step in [
                 ("plain_bc_mppi", plain_model, plain_mean, plain_std, plain_step),
@@ -310,7 +327,8 @@ def main() -> None:
                 row = evaluate_path_with_backend(method, spec, trajectory, compute_ms, backend, args)
                 row["sim_backend"] = backend
                 row["sim_backend_reason"] = backend_reason
-                rows.append(latency_adjusted(row, speed, args.reaction_delay_s))
+                for reaction_delay_s in reaction_delays:
+                    rows.append(latency_adjusted(dict(row), speed, reaction_delay_s))
 
     summary = aggregate_method_rows(rows)
     for row in summary:
@@ -318,9 +336,48 @@ def main() -> None:
         row["latency_violation_rate"] = round(float(np.mean([int(r["latency_violation"]) for r in method_rows])), 4)
         row["sim_backend"] = backend
         row["sim_backend_reason"] = backend_reason
+        row["speed_mps"] = "all"
+        row["reaction_delay_s"] = "all"
+    sweep_summary: list[dict[str, object]] = []
+    for method in sorted({str(r["method"]) for r in rows}):
+        for speed in sorted({float(r["speed_mps"]) for r in rows if str(r["method"]) == method}):
+            for reaction_delay_s in sorted(
+                {float(r["reaction_delay_s"]) for r in rows if str(r["method"]) == method and float(r["speed_mps"]) == speed}
+            ):
+                group = [
+                    r
+                    for r in rows
+                    if str(r["method"]) == method
+                    and float(r["speed_mps"]) == speed
+                    and float(r["reaction_delay_s"]) == reaction_delay_s
+                ]
+                if not group:
+                    continue
+                n = len(group)
+                sweep_summary.append(
+                    {
+                        "method": method,
+                        "speed_mps": speed,
+                        "reaction_delay_s": reaction_delay_s,
+                        "cases": n,
+                        "success_rate": round(float(np.mean([int(r["success"]) for r in group])), 4),
+                        "collision_rate": round(float(np.mean([int(r["collision"]) for r in group])), 4),
+                        "safety_violation_rate": round(float(np.mean([int(r["safety_violation"]) for r in group])), 4),
+                        "latency_violation_rate": round(float(np.mean([int(r["latency_violation"]) for r in group])), 4),
+                        "mean_min_clearance_m": round(
+                            float(np.mean([float(r.get("min_boundary_clearance_m", 0.0)) for r in group])), 4
+                        ),
+                        "mean_compute_time_ms": round(
+                            float(np.mean([float(r.get("planner_compute_time_ms", 0.0)) for r in group])), 4
+                        ),
+                        "sim_backend": backend,
+                    }
+                )
     write_csv(tables / "pybullet_validation_results.csv", summary)
+    write_csv(tables / "pybullet_validation_sweep_summary.csv", sweep_summary)
     write_csv(tables / "pybullet_validation_detail.csv", rows)
     print(f"Wrote {tables / 'pybullet_validation_results.csv'}")
+    print(f"Wrote {tables / 'pybullet_validation_sweep_summary.csv'}")
 
 
 if __name__ == "__main__":

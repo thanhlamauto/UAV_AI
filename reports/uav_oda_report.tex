@@ -1,10 +1,19 @@
-% Compile with XeLaTeX on Overleaf/TeX Live.
-\documentclass[10pt,a4paper]{article}
+% Compile with: tectonic reports/uav_oda_report.tex --outdir reports
+\documentclass[10pt,letterpaper,twocolumn]{article}
 
-\usepackage[a4paper,margin=1.55cm]{geometry}
+\usepackage[letterpaper,top=0.70in,left=0.70in,right=0.70in,bottom=0.80in]{geometry}
 \usepackage{fontspec}
-\IfFontExistsTF{Times New Roman}{\setmainfont{Times New Roman}}{\setmainfont{TeX Gyre Termes}}
-\setsansfont{TeX Gyre Heros}
+\IfFileExists{/System/Library/Fonts/Supplemental/Times New Roman.ttf}{
+  \setmainfont[
+    Path=/System/Library/Fonts/Supplemental/,
+    UprightFont={Times New Roman.ttf},
+    BoldFont={Times New Roman Bold.ttf},
+    ItalicFont={Times New Roman Italic.ttf},
+    BoldItalicFont={Times New Roman Bold Italic.ttf}
+  ]{Times New Roman}
+}{
+  \setmainfont{TeX Gyre Termes}
+}
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{tabularx}
@@ -14,267 +23,592 @@
 \usepackage{hyperref}
 \usepackage{caption}
 \usepackage{float}
-\usepackage{url}
 \usepackage{xurl}
-\usepackage{listings}
+\usepackage{indentfirst}
+\usepackage{titlesec}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usepackage{balance}
+\usetikzlibrary{arrows.meta,positioning,fit}
 
 \graphicspath{{outputs/figures/}{../outputs/figures/}}
-\hypersetup{
-  colorlinks=true,
-  linkcolor=black,
-  urlcolor=blue,
-  citecolor=black
+\hypersetup{colorlinks=true, linkcolor=black, urlcolor=black, citecolor=black}
+\urlstyle{same}
+
+\setlength{\columnsep}{0.24in}
+\setlength{\parindent}{0.18in}
+\setlength{\parskip}{0pt}
+\setlength{\floatsep}{6pt plus 2pt minus 2pt}
+\setlength{\textfloatsep}{8pt plus 2pt minus 2pt}
+\setlength{\intextsep}{6pt plus 2pt minus 2pt}
+\setlength{\dblfloatsep}{6pt plus 2pt minus 2pt}
+\setlength{\dbltextfloatsep}{8pt plus 2pt minus 2pt}
+\linespread{1.0}
+\raggedbottom
+\sloppy
+\emergencystretch=1.5em
+\setlist[itemize]{leftmargin=0.23in,itemsep=0pt,topsep=2pt,parsep=0pt}
+\setlist[enumerate]{leftmargin=0.23in,itemsep=0pt,topsep=2pt,parsep=0pt}
+\captionsetup{font=footnotesize,labelfont=normalfont,labelsep=period,justification=centering}
+\renewcommand{\figurename}{Fig.}
+\renewcommand{\arraystretch}{1.08}
+\renewcommand{\thesection}{\Roman{section}}
+\renewcommand{\thesubsection}{\Alph{subsection}}
+\titleformat{\section}{\centering\normalsize\scshape}{\thesection.}{0.55em}{}
+\titlespacing*{\section}{0pt}{10pt}{7pt}
+\titleformat{\subsection}{\itshape\normalsize}{\thesubsection.}{0.55em}{}
+\titlespacing*{\subsection}{0pt}{8pt}{4pt}
+\makeatletter
+\let\ps@plain\ps@empty
+\makeatother
+
+\newcommand{\TenDeTai}{ODA-Bench: Benchmark offline từ real-log cho đánh giá tránh vật cản UAV}
+\newcommand{\SinhVien}{Nguyễn Thanh Lâm}
+\newcommand{\Mentor}{Hoàng Công Phát}
+\newcommand{\DonViMentor}{Viettel High Tech}
+\newcommand{\EmailSinhVien}{}
+\newcommand{\EmailMentor}{}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\pathcode}[1]{\nolinkurl{#1}}
+\newcommand{\FlowTitle}[1]{\textbf{#1}}
+\newcommand{\FlowText}[1]{{\scriptsize\color{black!72}#1}}
+\newcommand{\OdaBenchFlowChart}{%
+\begin{tikzpicture}[
+  font=\footnotesize,
+  node distance=0.18cm,
+  stage/.style={
+    draw=black!18,
+    rounded corners=2pt,
+    fill=black!1,
+    minimum width=3.35cm,
+    minimum height=2.02cm,
+    text width=2.96cm,
+    align=left,
+    inner sep=5.5pt
+  },
+  arrow/.style={-{Latex[length=2.2mm]}, line width=0.55pt, draw=black!62}
+]
+\node[font=\normalsize\bfseries, anchor=west] (headline) at (0,0)
+  {Từ ODA dataset \(\rightarrow\) task + metric + baseline \(\rightarrow\) quyết định ứng viên rõ hơn};
+\node[stage, below=0.38cm of headline.south west, anchor=north west] (a) {
+  {\FlowTitle{1. Data adapter}}\\[4pt]
+  {\FlowText{Đọc \code{optitrack.csv}, radar, IMU và metadata theo timeline/trial.}}\\[3pt]
+  {\FlowText{Dựng start-goal, obstacle map và quỹ đạo log/planner.}}
+};
+\node[stage, right=0.22cm of a] (b) {
+  {\FlowTitle{2. Safety evaluator}}\\[4pt]
+  {\FlowText{Tính collision, violation, clearance, path length và smoothness.}}\\[3pt]
+  {\FlowText{Gắn nhãn future-risk để phát hiện near-miss.}}
+};
+\node[stage, right=0.22cm of b] (c) {
+  {\FlowTitle{3. Benchmark splits}}\\[4pt]
+  {\FlowText{Tách train/val/test theo trial để tránh rò rỉ frame.}}\\[3pt]
+  {\FlowText{Xuất artifact có thể reproduce cho từng track.}}
+};
+\node[stage, right=0.22cm of c] (d) {
+  {\FlowTitle{4. Baseline tracks}}\\[4pt]
+  {\FlowText{Planner: A*, RRT, RRT*, MPPI.}}\\[2pt]
+  {\FlowText{Learning: Filtered BC.}}\\[2pt]
+  {\FlowText{Risk: TTC baseline và MLP.}}
+};
+\node[stage, right=0.22cm of d] (e) {
+  {\FlowTitle{5. Latency + validation}}\\[4pt]
+  {\FlowText{ODA replay với sensor/front-end/planner delay.}}\\[3pt]
+  {\FlowText{PyBullet gate để kiểm tra rank trước thử nghiệm đắt hơn.}}
+};
+\draw[arrow] (a.east) -- (b.west);
+\draw[arrow] (b.east) -- (c.west);
+\draw[arrow] (c.east) -- (d.west);
+\draw[arrow] (d.east) -- (e.west);
+\node[font=\scriptsize, text=black!65, align=center, below=0.25cm of c] (outcome)
+  {Đầu ra cuối: bảng metric, risk labels, video định tính, ODA replay và simulator validation để chọn cấu hình đáng thử tiếp.};
+\end{tikzpicture}%
 }
-
-\setlength{\parskip}{3pt}
-\setlength{\parindent}{0pt}
-\emergencystretch=3em
-\setlist[itemize]{leftmargin=1.15em,itemsep=0pt,topsep=1pt}
-\setlist[enumerate]{leftmargin=1.25em,itemsep=0pt,topsep=1pt}
-\captionsetup{font=small,labelfont=bf}
-\renewcommand{\arraystretch}{1.04}
-
-% ====== Thong tin can sua ======
-\newcommand{\TenDeTai}{Đánh giá tránh vật cản UAV dựa trên quỹ đạo, nhãn rủi ro và dữ liệu đa cảm biến trên ODA Dataset}
-\newcommand{\SinhVien}{Nguyễn Thành Lâm}
-\newcommand{\Mentor}{[Họ và tên mentor]}
-\newcommand{\DonViMentor}{[Đơn vị mentor hướng dẫn]}
-\newcommand{\EmailMentor}{[email mentor hướng dẫn]}
+\title{\vspace{-0.32in}{\fontsize{24pt}{28pt}\selectfont \TenDeTai}}
+\author{%
+\begin{tabular*}{0.78\textwidth}{@{\extracolsep{\fill}}cc}
+\SinhVien & \Mentor\\
+Sinh viên & Mentor\\
+& \DonViMentor
+\end{tabular*}}
+\date{}
 
 \begin{document}
+\pagestyle{empty}
 
+\twocolumn[{
+\begin{@twocolumnfalse}
 \begin{center}
-{\Large\bfseries \TenDeTai}\\[4pt]
-{\normalsize \SinhVien, \Mentor\textsuperscript{1}}\\
-{\small \textsuperscript{1}\DonViMentor{} -- \EmailMentor}
+{\fontsize{24pt}{28pt}\selectfont \TenDeTai\par}
+\vspace{18pt}
+\begin{tabular*}{0.78\textwidth}{@{\extracolsep{\fill}}cc}
+\SinhVien & \Mentor\\
+Sinh viên & Mentor\\
+& \DonViMentor
+\end{tabular*}
 \end{center}
+\vspace{10pt}
 
-\vspace{-2mm}
-\section*{Tóm tắt}
-Đề tài xây dựng một pipeline nhẹ cho phát hiện nguy cơ va chạm và đánh giá tránh vật cản của Micro Air Vehicle (MAV) trong môi trường trong nhà/GNSS-denied. Sinh viên tập trung khai thác CSV/metadata của ODA Dataset, tái dựng quỹ đạo MAV từ OptiTrack, biểu diễn vật cản, tạo nhãn rủi ro theo clearance và so sánh quỹ đạo thật với các planner baseline. Pipeline đã mở rộng benchmark lên 300 trial mục tiêu, xuất 2100 dòng metric cho human/straight-line/geometric bypass/A*/RRT/RRT*/MPPI, tạo bảng perception-risk 2584 dòng từ RGB depth/radar/IMU trên 50 trial, và render video RGB--radar--IMU--depth--safety map--trajectory. Đề tài cũng đã xử lý mất cân bằng nhãn future-risk, đo Depth Anything V2 Small trên GPU, thử ONNX/TensorRT provider, bổ sung radar range-Doppler, obstacle representation, trajectory feasibility/smoothness và point-cloud segmentation/3D bbox trên ARCO như hướng stress-test ngoài ODA.
+\noindent\textit{Tóm tắt}\par
+\vspace{3pt}
+\noindent
+Đề tài xây dựng \textbf{ODA-Bench}, một benchmark offline dùng log UAV thật từ ODA Dataset để đánh giá tránh vật cản trước khi đưa ứng viên sang mô phỏng hoặc thử nghiệm thực địa. Thay vì tạo dataset mới hoặc claim một planner tự hành mới, đóng góp chính là chuẩn hóa ODA raw logs thành protocol có thể lặp lại: đọc OptiTrack/radar/IMU/metadata, dựng hình học vật cản, tạo nhãn collision/violation/clearance, tách train/val/test theo trial, chạy các baseline planner, Filtered Behavior Cloning (Filtered BC), risk predictor, latency-aware ODA replay và kiểm chứng lại bằng PyBullet validation. Kết quả hiện tại gồm 300 ODA trials, 14,700 policy-dataset samples, planner/risk/BC tracks, sensor/front-end latency, ODA replay online feasibility 384 cases và PyBullet validation 20 cases/method; các số liệu chính cho thấy benchmark tách được unsafe path, near-miss policy, risk ranking tốt hơn TTC baseline và giới hạn tốc độ do latency cảm biến/tính toán. Các planner dùng metadata obstacle map được trình bày như privileged-map sanity baseline, không phải bằng chứng perception-limited online autonomy.
 
-\section{Giới thiệu chung}
-UAV/MAV hoạt động trong nhà thường không có GNSS, dễ gặp các vật cản mảnh như cột, dây hoặc khung cửa. Bài toán phát hiện và tránh vật cản vì vậy cần không chỉ nhận biết môi trường mà còn phải đánh giá nguy cơ va chạm theo thời gian. ODA Dataset cung cấp các thử nghiệm MAV bay trong indoor với RGB camera, event camera, radar 24 GHz, IMU và OptiTrack ground truth, phù hợp để xây dựng pipeline đánh giá an toàn dựa trên dữ liệu thực \cite{odaGithub,oda4tu,odaPaper}.
+\vspace{12pt}
+\begin{center}
+\OdaBenchFlowChart
+\captionof{figure}{Luồng thí nghiệm offline benchmark trên ODA-Bench.}
+\label{fig:oda-bench-flow}
+\end{center}
+\vspace{8pt}
+\end{@twocolumnfalse}
+}]
+\thispagestyle{empty}
 
-Mục tiêu của đề tài là tạo ra một bộ kết quả đầu tiên có thể kiểm chứng được: đọc dữ liệu ODA ở mức CSV/metadata, tái dựng quỹ đạo và vị trí vật cản, tính khoảng cách an toàn, phát hiện safety-distance violation, và tạo trực quan hóa định tính đa cảm biến. Đóng góp chính của sinh viên gồm:
-\begin{itemize}
-  \item Thiết kế pipeline Python nhẹ, không phụ thuộc ROS/Gazebo, có thể chạy trên laptop cá nhân.
-  \item Chuẩn hóa cách đọc metadata nhiều vật cản và quy ước hệ trục OptiTrack của ODA.
-  \item Đề xuất bộ metric ban đầu cho collision-risk analysis: minimum distance, boundary clearance, violation, closest-approach time, path length và computation time.
-  \item Xây dựng nhãn rủi ro theo thời gian gồm safe, warning, danger và collision, kèm nhãn future-risk trong cửa sổ 1 giây.
-  \item So sánh quỹ đạo người lái với các baseline tránh vật cản: straight-line, geometric bypass, A* grid planner, RRT, RRT* và MPPI Python nhẹ.
-  \item Tạo video định tính 3/5/6 panel kết hợp RGB, monocular predicted depth, radar FFT, IMU, safety map và trajectory để minh chứng kết quả.
-\end{itemize}
+\section{GIỚI THIỆU CHUNG}
+UAV bay trong nhà hoặc vùng GNSS-denied khó đánh giá an toàn vì va chạm gây hỏng thiết bị, còn mô phỏng thuần túy dễ gặp khoảng cách sim-to-real. ODA Dataset cung cấp log UAV thật với RGB, event camera, radar, IMU, OptiTrack ground truth và metadata vật cản \cite{odaPaper,odaGithub}, nhưng bản raw dataset chưa tự trả lời được câu hỏi kỹ thuật: cấu hình planner/policy/risk model nào an toàn hơn trên cùng tập trial?
 
-\section{Nội dung và phương pháp}
-\subsection{Dữ liệu và quy trình}
-Pipeline sử dụng full ODA archive từ 4TU. File tải về là một ZIP lớn bọc thêm dataset ZIP bên trong, vì vậy sinh viên bổ sung script unwrap để lấy đúng archive xử lý. File \texttt{trial\_overview.csv} được dùng để lấy số lượng vật cản, tọa độ vật cản, điều kiện ánh sáng và cờ video. Với mỗi trial được chọn, pipeline extract \texttt{optitrack.csv}, \texttt{imu.csv}, \texttt{radar.csv} và \texttt{.avi}; không extract ROS bag để giữ quy trình nhẹ.
+Các hướng liên quan có ba nhóm chính. Nhóm UAV datasets như ODA, Blackbird hoặc Mid-Air cung cấp log hoặc dữ liệu bay, nhưng thường dừng ở dữ liệu thô hoặc synthetic data. Nhóm simulation benchmarks như AvoidBench và Flightmare tạo môi trường lặp lại cho UAV \cite{avoidbench,flightmare}, nhưng phụ thuộc vào simulator và có sim-to-real gap. Nhóm learning/offline policy như DroNet, D4RL, TD3+BC hoặc Decision Transformer cung cấp policy hoặc protocol học offline \cite{dronet,d4rl,td3bc,decisionTransformer}, nhưng không được thiết kế riêng cho real-log UAV obstacle avoidance kiểu ODA.
 
-\begin{table}[H]
+Vì vậy, mục tiêu của đề tài là lấp khoảng trống giữa raw ODA logs và một protocol đánh giá an toàn có thể lặp lại. Sản phẩm mong muốn không phải một thuật toán planner mới, mà là lớp benchmark/evaluator giúp lọc ứng viên sớm bằng số liệu: collision, safety violation, clearance, compute time, risk ranking/false negative và validation score. Cách đọc đúng của báo cáo là: ODA-Bench là tầng offline screening và validation gate, trong đó PyBullet được dùng để kiểm tra closed-loop trước khi đưa ứng viên sang thử nghiệm đắt hơn.
+
+\section{NỘI DUNG VÀ PHƯƠNG PHÁP}
+\subsection{Chuẩn hóa ODA thành benchmark}
+Pipeline đọc \code{optitrack.csv}, \code{radar.csv}, \code{imu.csv} và metadata vật cản của 300 trial ODA. Mặt phẳng bay được lấy theo OptiTrack \(x-z\); vật cản được mô hình hóa thành hình trụ bán kính \(r=0.20\,m\). Với vị trí UAV \(\mathbf{p}_i\) và vật cản \(\mathbf{o}_j\), clearance tới biên vật cản tại thời điểm \(i\) là:
+\[
+  c_i=\min_j\|\mathbf{p}_i-\mathbf{o}_j\|_2-r.
+\]
+Một trial bị tính collision nếu minimum clearance âm; bị tính safety violation nếu UAV đi vào vùng margin an toàn. Ngoài collision/violation, evaluator ghi lại minimum clearance, path length, smoothness và thời gian tính toán để so sánh nhiều ứng viên trên cùng điều kiện start/goal/obstacle.
+
+Dữ liệu downstream được tách theo trial ID để giảm rò rỉ frame cùng trial giữa train/test. Tập hiện tại gồm 210 train trials, 45 validation trials và 45 test trials, tương ứng 10,290/2,205/2,205 policy-dataset samples. Một policy-dataset sample là một timestep state-action sau khi resample trajectory: state gồm pose footprint \((x,z)\), vector tương đối tới goal, vector tới vật cản gần nhất, vận tốc, clearance và số vật cản; action là displacement cục bộ \((\Delta x,\Delta z)\) tới waypoint kế tiếp. Các mẫu này dùng cho học offline, không được hiểu là expert tuyệt đối vì chính evaluator cho thấy một phần log có near-miss. Cách tách này cho phép dùng cùng ODA-Bench cho planner evaluation, behavior cloning và risk prediction.
+
+\subsection{Các track đánh giá}
+Track planner so sánh human trajectory, straight-line, A*, geometric bypass, RRT, RRT* và MPPI trên hình học ODA. Các planner hình học trong track này dùng obstacle map từ metadata, vì vậy được dùng làm upper-bound/sanity baseline để kiểm tra evaluator và trade-off hình học, không phải bài toán perception online hoàn chỉnh. Track trajectory-quality đo thêm smoothness/turn-angle proxy 3D trên các trial có đủ height. Track imitation learning huấn luyện Plain BC-MPPI và Filtered BC-MPPI từ policy-dataset trajectories sinh bởi pipeline planner/demo; Filtered BC chỉ học từ mẫu có clearance đủ tốt để giảm học theo near-miss behavior. Track risk prediction so sánh TTC/distance baseline với một MLP nhỏ, trong đó PR-AUC đo chất lượng ranking còn FNR phụ thuộc threshold vận hành. Track latency dùng ODA RGB/cached depth để đo sensor-to-occupancy delay và dùng ODA OptiTrack replay tại thời điểm \(t+T_{\mathrm{delay}}\) để kiểm tra planner còn an toàn khi lệnh đến muộn. Track validation dùng \code{gym-pybullet-drones}/PyBullet \cite{gymPybullet} để kiểm tra closed-loop trên 20 cases/method, speed=1.
+
+\subsection{Giải thích các độ đo sử dụng}
+Với mỗi trial, evaluator lấy chuỗi vị trí UAV \(\mathbf{p}_1,\ldots,\mathbf{p}_N\) và các vị trí vật cản \(\mathbf{o}_j\). Minimum clearance của trial là:
+\[
+  c_{\min}=\min_i c_i,\qquad
+  c_i=\min_j\|\mathbf{p}_i-\mathbf{o}_j\|_2-r.
+\]
+Từ đó, \textit{collision rate} là tỉ lệ trial có \(c_{\min}<0\), còn \textit{safety violation rate} là tỉ lệ trial có \(c_{\min}<s\), với safety margin \(s=0.50\,m\). Hai độ đo này tách contact thật khỏi near-miss: collision đo va chạm với vật cản, còn violation đo việc bay quá gần dù chưa chạm.
+
+Path length đo quãng đường quỹ đạo:
+\[
+  L=\sum_{i=2}^{N}\|\mathbf{p}_i-\mathbf{p}_{i-1}\|_2.
+\]
+Smoothness được đo bằng thay đổi hướng trung bình giữa các đoạn liên tiếp. Gọi \(\theta_i=\operatorname{atan2}(z_i-z_{i-1},x_i-x_{i-1})\), khi đó smoothness càng nhỏ nghĩa là đường đi ít gấp khúc hơn:
+\[
+  S=\frac{1}{N-2}\sum_{i=2}^{N-1}\left|\operatorname{wrap}(\theta_{i+1}-\theta_i)\right|.
+\]
+Compute time là thời gian thuật toán sinh quỹ đạo hoặc action cho một trial; đây là số đo latency offline trên cùng môi trường chạy, không phải FPS bay thật.
+
+Với các thí nghiệm latency, tổng trễ được mô hình hóa theo chuỗi sensor-to-command:
+\[
+\begin{aligned}
+  T_{\mathrm{delay}}&=T_{\mathrm{sensor}}+T_{\mathrm{frontend}}+T_{\mathrm{planner}}+T_{\mathrm{publish}},\\
+  d_{\mathrm{delay}}&=v\,T_{\mathrm{delay}}.
+\end{aligned}
+\]
+\(T_{\mathrm{sensor}}\) là chu kỳ cảm biến, \(T_{\mathrm{frontend}}\) là thời gian đổi dữ liệu cảm biến thành occupancy/costmap, \(T_{\mathrm{planner}}\) là thời gian planner hoặc controller tính lệnh, và \(d_{\mathrm{delay}}\) là quãng đường UAV có thể đi trước khi lệnh mới có hiệu lực. Với ODA replay, pose bị trễ được lấy bằng nội suy OptiTrack tại \(t+T_{\mathrm{delay}}\), sau đó planner replanning từ pose này và được chấm lại collision/violation/clearance.
+
+Với risk prediction, TTC (Time-To-Collision) ước lượng thời gian còn lại trước khi chạm nếu UAV tiếp tục tiến gần vật cản theo trạng thái hiện tại:
+\[
+  \mathrm{TTC}=\frac{\max(c_i,0)}{\max(v_{\mathrm{close}},\epsilon)},\qquad
+  v_{\mathrm{close}}=-\frac{dc_i}{dt}.
+\]
+Nếu UAV không tiến gần vật cản thì \(v_{\mathrm{close}}\le0\) và TTC được xem là rất lớn. TTC nhỏ nghĩa là rủi ro cao. MLP risk predictor được đánh giá bằng PR-AUC để đo ranking trên dữ liệu mất cân bằng, risk recall \(=\mathrm{TP}/(\mathrm{TP}+\mathrm{FN})\), và false negative rate \(=\mathrm{FN}/(\mathrm{TP}+\mathrm{FN})\). Trong bài toán an toàn, false negative rate thấp là quan trọng vì bỏ sót nguy cơ nguy hiểm hơn báo động giả; tuy nhiên FNR phải được so sánh tại cùng operating point hoặc cùng mức recall/precision, không tách rời threshold.
+
+Với PyBullet validation, ba outcome success/violation/collision được tính như ba nhóm loại trừ nhau và cộng thành \(100\%\). Rank transfer đo mức offline ranking có giữ được thứ tự khi sang simulator hay không. Với \(n\) phương pháp, Spearman \(\rho\) được tính từ chênh lệch rank \(d_k\):
+\[
+  \rho=1-\frac{6\sum_{k=1}^{n}d_k^2}{n(n^2-1)}.
+\]
+
+\begin{table}[!t]
 \centering
-\small
-\caption{Tóm tắt dữ liệu ODA được khai thác trong pipeline.}
-\begin{tabularx}{0.96\linewidth}{>{\bfseries}l X}
+\footnotesize
+\caption{Môi trường đo tốc độ trong báo cáo.}
+\label{tab:runtime-env}
+\begin{tabularx}{\columnwidth}{>{\bfseries}p{2.35cm} X}
 \toprule
-Hạng mục & Giá trị \\
+Hạng mục & Cấu hình/diễn giải \\
 \midrule
-Số trial ID trong metadata & 1369 \\
-Số dòng trong \texttt{trial\_overview.csv} & 1997, do trial hai vật cản có hai dòng tọa độ \\
-Số trial có video + full-light + obstacle hợp lệ & 1108, gồm 593 trial một vật cản và 515 trial hai vật cản \\
-Benchmark hiện tại & 300/300 trial mục tiêu đã extract đủ OptiTrack/RGB/radar/IMU từ full archive \\
-Số dòng planner metric & 2100 dòng, tương ứng 300 trial và các baseline planner \\
-Số dòng perception-risk & 1096 dòng trên 20 trial đầu và 2584 dòng trên 50 trial cho depth/radar/IMU risk feature \\
-Batch depth timing & Depth Anything V2 Small trên 50 trial đạt \(0.0639\,s/frame\) wall-time và \(0.0174\,s/frame\) inference-time, batch size 8 \\
-External LiDAR & ARCO đã probe 3 ROS2 bag ZIP, 175997 messages, và chạy segmentation 6 frame \texttt{/ouster/points} với 25 bbox 3D; Multi-LiDAR có 27/27 link cần đăng nhập \\
-Quy ước mặt phẳng bay & Ground plane = OptiTrack \(x\) và \(z\); chiều cao = OptiTrack \(y\) \\
+Máy local & Apple M2, RAM 16GB, macOS 26.1; các script chạy bằng Python/NumPy trong workspace local. \\
+Máy PyBullet validation & Windows PC, NVIDIA GTX 1050 Ti, Intel Core i5-7400, RAM 8GB. Đây là máy dùng cho kết quả PyBullet validation. \\
+Setting PyBullet & Backend \code{gym-pybullet-drones}/PyBullet, GUI tắt, 20 seeds, speed \(=1\,m/s\), altitude \(=1.0\,m\), control frequency 48Hz, simulation frequency 240Hz. \\
+Compute time planner & Thời gian tính quỹ đạo offline cho một trial; dùng để so sánh tương đối giữa planner trên cùng máy. \\
+BC inference latency & Thời gian suy luận MLP nhỏ theo sample, không phải FPS camera hoặc tốc độ bay thật. \\
+Nền tảng inference & Report hiện không claim so sánh FPS PyTorch/ONNX/TensorRT; nếu bổ sung sau cần gom vào một bảng riêng kèm cấu hình GPU/driver. \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-\subsection{Metric đánh giá an toàn}
-Vật cản được mô hình hóa là hình trụ bán kính \(r=0.20\,m\), theo script visualization gốc của ODA. Với mỗi thời điểm \(t_i\), khoảng cách từ MAV tới vật cản gần nhất được tính trên mặt phẳng \(x\)--\(z\):
-\[
-d_i = \min_j \left\|\mathbf{p}_i - \mathbf{o}_j\right\|_2,\quad
-c_i = d_i - r
-\]
-trong đó \(\mathbf{p}_i\) là vị trí MAV, \(\mathbf{o}_j\) là vị trí vật cản, và \(c_i\) là clearance tới biên vật cản. Một trial bị xem là vi phạm khoảng cách an toàn nếu \(\min_i c_i < 0.50\,m\). Thời điểm closest approach là \(t_{i^\ast}\) với \(i^\ast=\arg\min_i c_i\).
-
-\subsection{Trực quan hóa đa cảm biến}
-Sinh viên xây dựng video định tính theo ba mức:
-\begin{enumerate}
-  \item \textbf{3 panel}: RGB camera, safety-distance map hình học và quỹ đạo OptiTrack.
-  \item \textbf{5 panel}: thêm radar FFT từ tín hiệu radar 24 GHz và đồ thị IMU rolling window.
-  \item \textbf{6 panel}: thêm monocular predicted depth từ DPT-Hybrid/MiDaS \cite{dptModel,dptPaper} hoặc Depth Anything V2 Small \cite{depthAnythingV2}. Depth panel hiện là relative depth định tính, chưa được hiệu chuẩn sang mét.
-\end{enumerate}
-Cách tiếp cận này giúp sản phẩm có minh chứng thị giác tương tự các demo multi-sensor nhưng vẫn giữ trọng tâm ở xử lý dữ liệu nhẹ, có thể tái lập nhanh.
-
-\section{Kết quả thực hiện}
-\subsection{Kết quả định lượng ban đầu}
-\begin{table}[H]
+\section{KẾT QUẢ THỰC HIỆN}
+\begin{table}[!t]
 \centering
-\small
-\caption{Benchmark metric ban đầu với obstacle radius \(0.20\,m\) và safety clearance \(0.50\,m\).}
-\begin{tabular}{ccccccc}
+\footnotesize
+\caption{Quy mô artifact chính của ODA-Bench hiện tại.}
+\label{tab:artifacts}
+\begin{tabularx}{\columnwidth}{>{\bfseries}p{2.45cm} X}
 \toprule
-Sample & Số vật cản & Min center (m) & Min clearance (m) & Closest time (s) & Collision & Violation \\
+Hạng mục & Kết quả \\
 \midrule
-3 & 1 & 0.6348 & 0.4348 & 6.4250 & Không & Có \\
-10 & 1 & 1.0300 & 0.8300 & 9.3250 & Không & Không \\
-345 & 2 & 1.1689 & 0.9689 & 8.6875 & Không & Không \\
+ODA benchmark subset & 300 trials có OptiTrack, radar, IMU, RGB/metadata; cùng protocol collision/violation/clearance. \\
+Downstream split & 210/45/45 train/val/test trials; 14,700 timestep state-action policy samples. \\
+Baseline tracks & Planner, Filtered BC, risk predictor; offline RL giữ ở hướng mở rộng. \\
+Latency tracks & ODA RGB/cached-depth sensor frontend, online delay model và ODA replay 384 cases từ OptiTrack. \\
+Validation gate & PyBullet validation 20 cases/method, speed=1; so sánh RRT*, MPPI và Filtered BC. \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}
 
-Sample 3 là trường hợp đáng chú ý vì MAV không va chạm trực tiếp nhưng đi vào vùng safety clearance \(0.50\,m\). Sample 345 có hai vật cản và MAV tránh an toàn với minimum boundary clearance \(0.9689\,m\). Thời gian tính metric cho từng trial ở mức dưới \(1\,ms\), phù hợp để mở rộng thành benchmark nhanh cho nhiều trial hơn.
+Quy mô artifact chính của benchmark được tóm tắt trong Bảng \ref{tab:artifacts}; đây là nền cho các track planner, learning, latency và validation ở các phần sau.
 
-\begin{figure}[H]
+\subsection{Planner baseline trên 300 trials}
+Bảng \ref{tab:planner} cho thấy benchmark phân biệt rõ unsafe baseline và các planner hình học khi obstacle map được lấy từ metadata ODA. Straight-line có collision \(14.00\%\) và violation \(65.33\%\). Human trajectory trong log có collision \(7.33\%\) và violation \(44.67\%\); đây là collision/violation theo mô hình evaluator với vật cản hình trụ và safety margin, không phải khẳng định toàn bộ các case đó là va chạm vật lý thật. A*, RRT và RRT* đạt \(0\%\) collision/violation trong benchmark 2D; MPPI đạt \(0\%\) collision, violation \(0.33\%\) và mean clearance cao nhất trong các planner chính \(0.7574\,m\). Geometric bypass chỉ áp dụng cho các trial thỏa giả định simple-bypass/single-obstacle, nên được báo cáo trên 196 valid trials và không nên so sánh như một planner full-coverage. Vì các planner hình học dùng cùng safety inflation \(r+s=0.70\,m\) như evaluator, kết quả 0\% violation ở \(s=0.50\,m\) nên được hiểu là privileged-map geometric sanity check, không phải perception-limited online autonomy. Vì vậy, đóng góp của track này không phải chứng minh bài toán planning hình học đã khó, mà là tạo chuẩn đo lặp lại để thấy khi map đã biết thì bottleneck tiếp theo nằm ở sensing, latency, risk và closed-loop validation.
+
+\begin{table}[!t]
 \centering
-\includegraphics[width=0.49\linewidth]{trajectory_sample_3.png}
-\includegraphics[width=0.49\linewidth]{trajectory_sample_345.png}
-\caption{Minh họa quỹ đạo MAV, vị trí vật cản, safety boundary và clearance theo thời gian cho sample 3 và 345.}
-\end{figure}
-
-\subsection{So sánh planner baseline}
-Trên 300 trial mục tiêu đã extract từ full ODA archive, pipeline đã so sánh quỹ đạo người lái với các baseline: đường thẳng từ start tới goal, geometric bypass bằng waypoint tránh biên an toàn, A* trên occupancy grid 2D, RRT, RRT* và MPPI Python nhẹ. Các planner dùng cùng mô hình vật cản tròn trên mặt phẳng \(x\)--\(z\), cùng bán kính vật cản \(0.20\,m\) và safety clearance \(0.50\,m\). Không có trial hoặc planner nào bị crash trong batch này.
-
-\begin{table}[H]
-\centering
-\small
-\caption{So sánh quỹ đạo người lái và planner baseline trên 300 trial ODA mục tiêu.}
-\begin{tabular}{l r r r r r}
+\footnotesize
+\caption{Planner safety trên 300 ODA trials.}
+\label{tab:planner}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lrrrrr}
 \toprule
-Phương pháp & Trial & Collision & Violation & Mean clearance (m) & Mean compute (ms) \\
+Phương pháp & Trials & Collision & Violation & Clear. (m) & Compute (ms) \\
 \midrule
-Human trajectory & 300 & 0.0733 & 0.4467 & 0.6126 & 0.0000 \\
-Straight-line & 300 & 0.1400 & 0.6533 & 0.4203 & 2.8712 \\
-Geometric bypass & 196 & 0.0000 & 0.0051 & 0.7005 & 6.3860 \\
-Geometric not-needed & 104 & 0.0000 & 0.0000 & 0.8647 & 2.4630 \\
-A* grid planner & 300 & 0.0000 & 0.0000 & 0.6426 & 8.6793 \\
-RRT & 300 & 0.0000 & 0.0000 & 0.6702 & 3.6168 \\
-RRT* & 300 & 0.0000 & 0.0000 & 0.6360 & 1196.3979 \\
-MPPI & 300 & 0.0000 & 0.0033 & 0.7574 & 39.9327 \\
+Human & 300 & 0.0733 & 0.4467 & 0.6126 & 0.00 \\
+Straight-line & 300 & 0.1400 & 0.6533 & 0.4203 & 2.87 \\
+A* grid & 300 & 0.0000 & 0.0000 & 0.6426 & 8.68 \\
+Geom. bypass & 196 & 0.0000 & 0.0051 & 0.7005 & 6.39 \\
+RRT & 300 & 0.0000 & 0.0000 & 0.6702 & 3.62 \\
+RRT* & 300 & 0.0000 & 0.0000 & 0.6360 & 1196.40 \\
+MPPI & 300 & 0.0000 & 0.0033 & 0.7574 & 39.93 \\
 \bottomrule
 \end{tabular}
+}
 \end{table}
 
-Kết quả cho thấy ODA không quá khó về planner hình học: quỹ đạo người lái có collision rate \(0.0733\) và safety-violation rate \(0.4467\), còn straight-line baseline có violation rate \(0.6533\). A*, RRT và RRT* đạt \(0.00\) collision/violation trên 300 trial; MPPI chỉ còn \(0.0033\) violation và có mean clearance cao nhất trong nhóm planner. Bảng feasibility bổ sung cho thấy smoothness heading-change trung bình của human là \(0.679198\), cao hơn nhiều so với MPPI \(0.000104\), RRT* \(0.000062\) và A* \(0.005906\); đây mới là proxy 2D, chưa phải kiểm chứng động học UAV đầy đủ.
-
-\begin{figure}[H]
+\begin{table}[!t]
 \centering
-\includegraphics[width=0.82\linewidth]{planner_comparison_sample_345.png}
-\caption{So sánh human trajectory, straight-line, geometric bypass, A*, RRT, RRT* và MPPI trên sample 345 có hai vật cản.}
-\end{figure}
-
-\subsection{Perception-risk từ depth, radar và IMU}
-Sau benchmark planner, pipeline chạy monocular depth ở 5 fps, sau đó kết hợp depth center-crop, radar peak/energy, IMU norm và clearance ground-truth để tạo bảng perception-risk. Bản mở rộng mới dùng Depth Anything V2 Small trên 50 trial, tạo 2584 dòng feature. Bộ phân loại ban đầu dùng random forest và split theo trial ID để tránh rò rỉ frame cùng trial giữa train/test.
-
-\begin{table}[H]
-\centering
-\small
-\caption{Imbalance-aware future-risk classification, split theo trial ID.}
-\begin{tabular}{l r r r r}
+\footnotesize
+\caption{Cấu hình chính của planner baseline.}
+\label{tab:planner-config}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{ll}
 \toprule
-Thiết lập & Accuracy & Macro-F1 & Balanced acc. & Risk recall \\
+Planner & Cấu hình chính \\
 \midrule
-Baseline depth+radar+IMU & 0.8447 & 0.5405 & -- & 0.0962 \\
-Macro-F1 tuned depth+radar+IMU & 0.8540 & 0.5615 & 0.5558 & 0.1154 \\
-Recall-tuned radar & 0.7236 & 0.6533 & 0.7731 & 0.8462 \\
-Recall-tuned depth+radar+IMU & 0.6366 & 0.5835 & 0.7290 & 0.8654 \\
-Depth Anything 50, macro-F1 tuned & 0.9011 & 0.5918 & 0.5697 & 0.1594 \\
-Depth Anything 50, recall-tuned & 0.6602 & 0.5260 & 0.6631 & 0.6667 \\
+A* grid & Resolution \(0.10\,m\); obstacle inflation \(r+s=0.70\,m\); Euclidean heuristic. \\
+RRT & 1500 iterations; step \(0.35\,m\); goal sample rate 0.20; inflated radius \(0.70\,m\). \\
+RRT* & 2500 iterations; step \(0.30\,m\); neighbor radius \(0.75\,m\); goal sample rate 0.15. \\
+MPPI & 512 rollouts; horizon 60; 10 iterations; temperature 1.0; noise \(\sigma=0.35\,m\). \\
 \bottomrule
 \end{tabular}
+}
 \end{table}
 
-DPT-Hybrid/MiDaS vượt majority baseline nhẹ khi dùng radar+IMU hoặc depth+radar+IMU, nhưng recall future-risk thấp do mất cân bằng nhãn. Sau khi thêm train-only oversampling và threshold tuning, cấu hình tối ưu macro-F1 đạt \(0.8540\) accuracy và \(0.5615\) macro-F1; cấu hình recall-tuned hy sinh accuracy nhưng nâng future-risk recall lên \(0.8462\)--\(0.8654\). Đây là trade-off phù hợp hơn cho cảnh báo an toàn, nơi bỏ sót nguy cơ nguy hiểm hơn báo động giả.
+Bảng \ref{tab:planner-config} ghi rõ hyperparameter để tránh diễn giải nhầm về fairness. Các planner dùng cùng obstacle radius \(r=0.20\,m\) và safety margin \(s=0.50\,m\), nhưng không dùng cùng compute budget tuyệt đối; vì vậy Bảng \ref{tab:planner-budget} bổ sung một sweep nhỏ để đọc trade-off runtime/quality thay vì chỉ so sánh một cấu hình đơn lẻ.
 
-Sau khi chuyển sang batch inference và load model một lần, Depth Anything V2 Small xử lý 50 trial/2584 frame với trung bình \(0.0639\,s/frame\) wall-time và \(0.0174\,s/frame\) inference-time. ONNX Runtime CUDA đã chạy được trên 3 trial mẫu với DPT, đạt \(0.0827\,s/frame\) wall-time và \(0.0405\,s/frame\) inference-time. TensorRT chưa được claim vì server hiện tại không có Docker/Podman, thiếu \texttt{trtexec}, thiếu Python \texttt{tensorrt} và thiếu thư viện \texttt{libnvinfer.so.10}.
+\begin{table}[!t]
+\centering
+\footnotesize
+\caption{Phân tích lại từ clearance đã lưu: violation khi đổi safety margin.}
+\label{tab:margin-sensitivity}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lrrrr}
+\toprule
+Phương pháp & \(s=0.30\) & \(s=0.40\) & \(s=0.50\) & \(s=0.60\) \\
+\midrule
+Human & 0.2067 & 0.3533 & 0.4467 & 0.5467 \\
+Straight-line & 0.4400 & 0.5633 & 0.6533 & 0.7467 \\
+RRT* & 0.0000 & 0.0000 & 0.0000 & 0.7400 \\
+MPPI & 0.0000 & 0.0000 & 0.0033 & 0.1300 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
 
-Phân tích stability/calibration cho thấy DPT có tương quan Spearman giữa depth median và clearance là \(0.4752\), RMSE tuyến tính \(1.195\,m\); Depth Anything V2 Small trên 50 trial đạt Spearman \(0.3251\), RMSE \(1.1733\,m\). Vì vậy depth panel hiện chỉ được dùng như relative depth định tính và feature rủi ro, chưa được claim là metric depth theo mét.
+Bảng \ref{tab:margin-sensitivity} không chạy lại planner mà chỉ recompute từ \code{min\_boundary\_clearance\_m} trong artifact per-trial. Kết quả cho thấy kết luận về straight-line/human unsafe giữ ổn định khi đổi margin, nhưng ranking giữa planner an toàn nhạy với ngưỡng quá bảo thủ: ở \(s=0.60\,m\), RRT* bị đánh violation cao do clearance trung bình thấp hơn MPPI. Với \(n=300\), Wilson 95\% CI cho rate bằng 0 là khoảng \([0,0.0126]\); riêng MPPI violation \(0.0033\) có CI xấp xỉ \([0.0006,0.0186]\). Vì vậy các con số 0 nên được đọc là ``không thấy lỗi trong 300 trial'', không phải bảo đảm xác suất lỗi bằng 0.
+
+\begin{table}[!t]
+\centering
+\footnotesize
+\caption{Budget sweep planner trên 45 trial từ artifact reviewer.}
+\label{tab:planner-budget}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{llrrrr}
+\toprule
+Planner & Budget & Coll. & Viol. & Clear. (m) & Mean/P95 ms \\
+\midrule
+RRT & 300 iter & 0.0000 & 0.0000 & 0.9031 & 2.0/2.7 \\
+RRT & 900 iter & 0.0000 & 0.0000 & 0.8913 & 1.6/2.4 \\
+RRT* & 300 iter & 0.0000 & 0.0000 & 0.8981 & 14.3/28.0 \\
+RRT* & 900 iter & 0.0000 & 0.0000 & 0.8721 & 92.8/187.3 \\
+MPPI & 96 roll., 3 iter & 0.0000 & 0.0000 & 0.9878 & 2.8/3.3 \\
+MPPI & 384 roll., 8 iter & 0.0000 & 0.0000 & 0.9878 & 8.7/9.7 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+Bảng \ref{tab:planner-budget} chạy trên cùng 45 trial để trả lời câu hỏi fairness ở mức compute budget. Trong subset này tất cả cấu hình đều an toàn, nên khác biệt chính nằm ở runtime và độ mượt/clearance; RRT* tăng iteration làm compute tăng mạnh, còn MPPI trong prototype này ít đổi path vì seed path hình học đã đủ tốt cho các case được chọn. Runtime của RRT có thể không tăng đơn điệu theo iteration do early connection/shortcutting và nhiễu đo thời gian trong Python prototype. Bảng này chưa thay thế benchmark 300 trial, nhưng giúp giải thích vì sao không nên đọc compute time của RRT* như một controller tối ưu onboard.
+
+\subsection{Chất lượng quỹ đạo 3D}
+Ngoài bảng safety 2D ở Bảng \ref{tab:planner}, đề tài có thêm proxy chất lượng quỹ đạo 3D trên 16 trial có đủ thông tin height. Hình \ref{fig:trajectory-feasibility-3d} minh họa một case ODA trial 345; path planner vẫn chạy trên footprint \(x-z\), sau đó được lift theo height start-goal và resample theo arclength để đo length, smoothness và max-turn trong Bảng \ref{tab:trajectory-quality}. Đây chưa phải kiểm tra dynamics đầy đủ của quadrotor, nhưng giúp loại đường đi quá gấp khúc trước khi đưa sang mô phỏng.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.48\linewidth]{perception_risk_ablation_recall_tuned_dpt.png}
-\includegraphics[width=0.48\linewidth]{depth_stability_calibration.png}
-\caption{Imbalance-aware ablation cho DPT-Hybrid/MiDaS và phân tích stability/calibration giữa relative depth, radar feature và clearance.}
+\includegraphics[width=0.82\columnwidth,trim=35 45 35 5,clip]{trajectory_feasibility_3d_trial_345.png}
+\caption{Minh họa proxy feasibility 3D trên ODA trial 345: quỹ đạo Human/OptiTrack và các planner RRT, RRT*, MPPI quanh vật cản hình trụ.}
+\label{fig:trajectory-feasibility-3d}
 \end{figure}
 
-\subsection{Kết quả định tính}
-Các video MP4 đã được xuất tại \texttt{outputs/videos/}. Hai video hoàn chỉnh nhất là:
-\begin{itemize}
-  \item \texttt{qualitative\_depth\_sensor\_sample\_3.mp4}: RGB + predicted depth + radar FFT + IMU + safety map + trajectory; thể hiện case vi phạm khoảng cách an toàn.
-  \item \texttt{qualitative\_depth\_sensor\_sample\_345.mp4}: cùng cấu trúc 6 panel cho case hai vật cản.
-  \item \texttt{qualitative\_depth\_anything\_v2\_small\_sample\_3.mp4}: video so sánh dùng Depth Anything V2 Small cho predicted-depth panel.
-\end{itemize}
-
-\begin{figure}[H]
+\begin{table}[!t]
 \centering
-\includegraphics[width=\linewidth]{qualitative_depth_sensor_sample_3_contact_sheet.png}
-\caption{Contact sheet của video 6 panel cho sample 3: RGB, relative depth, radar FFT, IMU, safety map và trajectory.}
-\end{figure}
+\footnotesize
+\caption{Trajectory quality proxy 3D trên 16 ODA trials.}
+\label{tab:trajectory-quality}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lrrrrr}
+\toprule
+Phương pháp & Trials & Length (m) & Smooth. & Max turn & Compute (ms) \\
+\midrule
+Human & 16 & 6.8853 & 0.115282 & 1.727 & 0.0 \\
+RRT & 16 & 5.8320 & 0.001332 & 0.248 & 1.9 \\
+RRT* & 16 & 5.7257 & 0.000069 & 0.046 & 394.7 \\
+MPPI & 16 & 5.7448 & 0.000094 & 0.077 & 72.0 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
 
-\subsection{Đính kèm mã nguồn và bộ cài}
-Mã nguồn và script tái lập kết quả nằm trong cùng thư mục dự án, gồm các nhóm lệnh: tải/extract full ODA, tạo manifest 300 trial, chạy benchmark planner, cache Depth Anything V2 Small, tạo perception-risk feature, huấn luyện ablation, phân tích range-Doppler/representation/feasibility, chạy ARCO point-cloud segmentation/3D bbox và dùng \texttt{scripts/audit\_goal\_status.py} để kiểm tra artifact cuối.
+Bảng \ref{tab:trajectory-quality} giải thích thêm trade-off trong planner: RRT rất nhanh nhưng max-turn lớn hơn; RRT*/MPPI cho đường mượt hơn rõ rệt, trong đó MPPI giữ compute time thấp hơn RRT* trong prototype Python. Human/OptiTrack có smoothness proxy cao vì quỹ đạo thật có nhiễu đo và biến thiên theo thời gian, nên chỉ dùng làm reference thực tế, không dùng để kết luận human kém dynamics.
 
-\section{Đánh giá hiệu quả}
-\begin{table}[H]
+\subsection{Latency và ODA replay}
+Latency được đánh giá ở hai mức. Mức thứ nhất đo sensor/front-end, tóm tắt ở Bảng \ref{tab:frontend-latency}: ODA RGB có tần số 5 fps nên riêng chu kỳ cảm biến đã là \(200\,ms\); cached depth đổi sang occupancy chỉ mất khoảng \(2.7\,ms\), nhưng nếu chạy Depth Anything V2 Small end-to-end thì front-end tăng lên \(66.6\,ms\). Trên 50 ODA sequence với 2,584 frame, Depth Anything V2 Small đạt wall-time trung bình \(64.0\,ms/frame\) và inference \(17.4\,ms/frame\); metric-depth indoor model nặng hơn, khoảng \(190.5\,ms/frame\) wall-time trên 15 sequence. Điều này cho thấy bottleneck online không chỉ nằm ở planner mà còn ở sensor period và depth frontend.
+
+\begin{table*}[!t]
 \centering
 \small
-\caption{Đánh giá theo các tiêu chí phù hợp với yêu cầu chấm điểm.}
-\begin{tabularx}{0.96\linewidth}{>{\bfseries}p{3.0cm} X}
+\caption{Sensor/front-end latency dùng ODA RGB/cached depth, 8 seeds mỗi tốc độ.}
+\label{tab:frontend-latency}
+\begin{tabularx}{0.94\textwidth}{
+  >{\raggedright\arraybackslash\bfseries}p{4.2cm}
+  >{\centering\arraybackslash}p{2.0cm}
+  >{\centering\arraybackslash}p{2.1cm}
+  >{\centering\arraybackslash}p{1.8cm}
+  >{\centering\arraybackslash}p{1.9cm}
+  >{\centering\arraybackslash}p{1.7cm}
+}
+\toprule
+Pipeline & Sensor (ms) & Frontend (ms) & Safe speed & First unsafe & First coll. \\
+\midrule
+ODA cached depth \(\rightarrow\) grid & 200.0 & 2.7 & 3.0 & 4.0 & 4.0 \\
+ODA Depth Anything \(\rightarrow\) grid & 200.0 & 66.6 & 3.0 & 3.0 & 4.0 \\
+LiDAR bbox + ODA cached depth mux & 200.0 & 3.1 & 3.0 & 3.0 & 4.0 \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+
+Trong Bảng \ref{tab:frontend-latency}, dòng ``LiDAR bbox + ODA cached depth mux'' vẫn bị giới hạn bởi timestamp ODA RGB/cached-depth \(5\,fps\Rightarrow200\,ms\); đây không phải claim về raw LiDAR 10 Hz. Stress-test LiDAR 10 Hz \(\rightarrow\) ESDF \(\rightarrow\) MPPI được tách riêng ở đoạn sau với sensor period \(100\,ms\), nhằm đánh giá latency envelope nếu có nguồn point-cloud nhanh hơn ODA RGB.
+
+Mức thứ hai dùng ODA replay thật: chọn các timestamp OptiTrack gần vật cản, cộng tổng delay vào thời gian hiện tại, nội suy pose tại \(t+T_{\mathrm{delay}}\), rồi replanning từ pose đã bị trễ. Tổng cộng có 384 case chi tiết, tương ứng 128 case cho mỗi planner. Kết quả ở Bảng \ref{tab:oda-replay} cho thấy MPPI không collision trong replay nhưng còn \(11.7\%\) violation; RRT/RRT* nhanh hoặc mượt hơn ở vài chỉ số nhưng có collision do một số case replanning từ pose trễ thất bại. Như vậy, ODA-Bench không chỉ chấm path offline tĩnh mà còn kiểm tra được câu hỏi thực dụng: lệnh tránh vật cản có đến kịp không.
+
+\begin{table}[!t]
+\centering
+\footnotesize
+\caption{ODA replay online feasibility theo planner.}
+\label{tab:oda-replay}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lrrrrrr}
+\toprule
+Planner & Cases & Safe & Viol. & Coll. & Delay (ms) & Compute (ms) \\
+\midrule
+MPPI & 128 & 88.3 & 11.7 & 0.0 & 169.7 & 31.0 \\
+RRT & 128 & 89.8 & 0.8 & 9.4 & 149.9 & 11.2 \\
+RRT* & 128 & 88.3 & 0.8 & 10.9 & 181.6 & 42.9 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+Một stress-test phụ với LiDAR 10 Hz \(\rightarrow\) ESDF \(\rightarrow\) MPPI cho thấy tổng delay từ \(144.7\) đến \(321.4\,ms\). Ở \(2\,m/s\), UAV đi thêm khoảng \(0.41\,m\) trước khi lệnh mới có hiệu lực; ở \(5\,m/s\) bắt đầu safety violation và \(6\,m/s\) có collision trong kiểm tra kinematic-delay. Sweep 144 case cho cùng mô hình latency cho thấy MPPI 3D-ESDF đạt safe rate \(100\%\) trong proxy này từ \(1\) đến \(4\,m/s\), sau đó rơi mạnh ở mức \(5\)--\(6\,m/s\). Thí nghiệm này dùng cùng công thức delay để đặt ngưỡng tốc độ hợp lý trước khi chạy simulator hoặc robot thật, không thay thế closed-loop dynamics validation.
+
+\subsection{Behavior cloning và risk prediction}
+Plain BC-MPPI và Filtered BC-MPPI dùng cùng policy MLP nhỏ, input là feature trạng thái cục bộ trong \code{FEATURE\_COLUMNS}, output là local displacement/action 2D \((\Delta x,\Delta z)\) tới waypoint kế tiếp trong policy dataset. Split vẫn theo trial ID. Bản Filtered BC chỉ giữ train samples có raw clearance trên ngưỡng quantile \(0.60\), tương ứng \(1.6315\,m\) và 4,116 train samples trong artifact hiện tại; mục tiêu là giảm việc học theo các đoạn rollout quá gần vật cản. Theo Bảng \ref{tab:learning-risk}, Filtered BC giảm safety violation trên 45 test trials từ \(0.3111\) xuống \(0.0667\) so với Plain BC, trong khi collision rate trên ODA-Bench test giữ ở \(0.0444\). Điều này cho thấy lọc sample theo clearance có tác dụng giảm near-miss behavior, dù policy-learning claim vẫn phải giới hạn vì kết quả closed-loop chưa ổn định tuyệt đối.
+
+\begin{table}[!t]
+\centering
+\footnotesize
+\caption{Cấu hình Plain BC-MPPI và Filtered BC-MPPI.}
+\label{tab:bc-config}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{ll}
+\toprule
+Hạng mục & Thiết lập \\
+\midrule
+Input/output & 8D local state \(\rightarrow\) 2D displacement \((\Delta x,\Delta z)\). \\
+Architecture & MLP \(8\rightarrow64\rightarrow64\rightarrow2\), ReLU hidden layers. \\
+Loss/optimizer & MSE action loss; mini-batch gradient descent, batch 256. \\
+Training & 80 epochs; learning rate \(5\times10^{-4}\); same val/test split. \\
+Rollout cap & Max 100 rollout steps; max step \(0.1722\,m\). \\
+Plain train set & 10,290 train samples. \\
+Filtered train set & Clearance quantile 0.60 \(=1.6315\,m\); 4,116 train samples. \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+Bảng \ref{tab:bc-config} cho thấy Plain BC và Filtered BC khác nhau ở tập train được lọc, còn kiến trúc, loss, epoch, batch size và protocol đánh giá giữ giống nhau. Vì Filtered BC dùng tập train nhỏ và sạch hơn, kết quả nên được đọc là ablation về lọc dữ liệu theo clearance, chưa phải bằng chứng policy-learning tổng quát hơn mọi distribution.
+
+Risk predictor trong Bảng \ref{tab:learning-risk} cho thấy MLP tốt hơn TTC ở chất lượng ranking và calibration tổng thể: TTC đạt PR-AUC \(0.784\), precision \(0.428\) và ECE \(0.614\), trong khi MLP nhỏ đạt PR-AUC \(0.885\), precision \(0.598\) và ECE \(0.094\). Tuy nhiên tại threshold đang báo cáo, TTC có FNR \(0.000\) còn MLP có FNR \(0.008\); vì vậy kết luận đúng là MLP ranking tốt hơn, không phải MLP luôn an toàn hơn TTC ở mọi operating point. Nếu dùng cho cảnh báo thật, threshold cần được chọn theo yêu cầu recall/precision hoặc cost-sensitive calibration.
+
+\begin{table}[!t]
+\centering
+\footnotesize
+\caption{Kết quả learning/risk chính trên ODA-Bench.}
+\label{tab:learning-risk}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lrrrr}
+\toprule
+Track & Metric 1 & Metric 2 & Metric 3 & Ghi chú \\
+\midrule
+Plain BC & viol. 0.3111 & coll. 0.0444 & clear. 1.3365 & 45 test trials \\
+Filtered BC & viol. 0.0667 & coll. 0.0444 & clear. 1.3809 & lọc sample gần vật cản \\
+TTC risk & PR-AUC 0.784 & FNR 0.000 & pos. 0.3383 & heuristic đơn giản \\
+MLP risk & PR-AUC 0.885 & FNR 0.008 & prec. 0.598 & ranking/calibration tốt hơn \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+\begin{table}[!t]
+\centering
+\footnotesize
+\caption{Risk operating point trên cùng test split.}
+\label{tab:risk-operating}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lrrrr}
+\toprule
+Method & Target recall & Recall & Precision & FNR \\
+\midrule
+TTC & 0.95 & 0.9531 & 0.6031 & 0.0469 \\
+MLP & 0.95 & 0.9504 & 0.7034 & 0.0496 \\
+TTC & 0.99 & 0.9906 & 0.5044 & 0.0094 \\
+MLP & 0.99 & 0.9906 & 0.6189 & 0.0094 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+Bảng \ref{tab:risk-operating} so sánh TTC và MLP tại operating point cùng recall. Khi giữ recall xấp xỉ \(0.95\) hoặc \(0.99\), MLP cho precision cao hơn TTC, trong khi FNR tương đương theo ngưỡng đã chọn. Điều này củng cố claim hẹp: MLP hữu ích hơn cho ranking/thresholding risk, còn lựa chọn threshold cuối vẫn phải theo chi phí bỏ sót và báo động giả.
+
+\subsection{PyBullet validation gate}
+Validation trong PyBullet được dùng như gate kiểm tra lại rank trước khi thử nghiệm đắt hơn. Cấu hình máy và simulator được nêu ở Bảng \ref{tab:runtime-env}; setting từ code gồm obstacle radius \(0.20\,m\), safety distance \(0.50\,m\), reaction delay \(0.15\,s\), PyBullet altitude \(1.0\,m\), control frequency 48Hz, simulation frequency 240Hz; RRT* dùng 900 iterations, step size \(0.35\,m\), neighbor radius \(0.75\,m\), còn MPPI dùng 192 rollouts, 5 iterations và horizon 50 steps. Kết quả 20 cases/method ở speed=1 trong Bảng \ref{tab:pybullet-validation} được báo cáo theo thứ tự success/violation/collision: RRT* đạt \(75/10/15\), MPPI đạt \(65/18/17\), Filtered BC đạt \(69/15/16\). Rank-transfer Spearman \(\rho=0.40\) cho thấy thứ tự offline và simulator có tương quan vừa phải trong validation set hiện tại; ODA-Bench vì vậy đóng vai trò lọc và phân tích ứng viên trước simulator/robot thật.
+
+\begin{table}[!t]
+\centering
+\footnotesize
+\caption{PyBullet validation, 20 cases/method, speed=1.}
+\label{tab:pybullet-validation}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lrrr}
+\toprule
+Phương pháp & Success & Violation & Collision \\
+\midrule
+RRT* & 0.75 & 0.10 & 0.15 \\
+MPPI & 0.65 & 0.18 & 0.17 \\
+Filtered BC & 0.69 & 0.15 & 0.16 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+\section{ĐÍNH KÈM MÃ NGUỒN VÀ BỘ CÀI CHƯƠNG TRÌNH}
+Mã nguồn được nộp qua repository GitHub: \url{https://github.com/thanhlamauto/UAV_AI}. Hướng dẫn cài đặt và chạy lại nằm trong file \pathcode{README.md} ở thư mục gốc của repository. Tóm tắt quy trình cài đặt là clone repository, tạo Python virtual environment, cài các gói trong \pathcode{requirements.txt}, đặt ODA raw data vào \pathcode{data/raw/ODA_Dataset/}, sau đó chạy các lệnh reproduce được ghi trong README để sinh lại bảng metric, hình và video trong \pathcode{outputs/}.
+
+\begin{table}[!t]
+\centering
+\footnotesize
+\caption{Manifest artifact/reproducibility của báo cáo.}
+\label{tab:artifact-manifest}
+\begin{tabularx}{\columnwidth}{>{\bfseries}p{2.45cm} X}
+\toprule
+Hạng mục & Đường dẫn/trạng thái \\
+\midrule
+Mốc code/reproduce & Commit \code{bdb1050}; toàn bộ bảng chính và hình trong báo cáo được sinh từ artifact đi kèm release bundle. \\
+Report source & \pathcode{reports/uav_oda_report.tex}; PDF sinh ra tại \pathcode{reports/uav_oda_report.pdf}. \\
+Bảng chính & \pathcode{outputs/tables/}: planner, BC/risk, replay, PyBullet validation và các bảng reviewer sensitivity/CI/budget. \\
+Hình/video & \pathcode{outputs/figures/} và \pathcode{outputs/videos/}; video định tính chỉ dùng minh họa case, không thay thế metric. \\
+PyBullet & Kết quả validation 20 cases/method được lưu trong artifact PyBullet và được tóm tắt ở Bảng \ref{tab:pybullet-validation}. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Các bảng \ref{tab:margin-sensitivity}, \ref{tab:planner-budget} và \ref{tab:risk-operating} được sinh bằng cách phân tích lại artifact đã lưu. Các lệnh reproduce trong README là nguồn kiểm chứng chính; release bundle đi kèm bản nộp chứa bảng, hình và video được trích dẫn trong báo cáo.
+
+\section{ĐÁNH GIÁ HIỆU QUẢ}
+\begin{table}[H]
+\centering
+\footnotesize
+\caption{Đánh giá theo các tiêu chí của báo cáo rút gọn.}
+\label{tab:effectiveness}
+\begin{tabularx}{\columnwidth}{>{\bfseries}p{2.2cm} X}
 \toprule
 Tiêu chí & Đánh giá \\
 \midrule
-Độ khó và phức tạp & Bài toán kết hợp UAV indoor, dữ liệu đa cảm biến, motion-capture ground truth, metric an toàn và trực quan hóa theo thời gian. \\
-Quy mô công việc & Đã triển khai pipeline đọc dữ liệu, benchmark 300 trial, hình tĩnh, video 3/5/6 panel, depth cache, ablation perception-risk và script tái lập. \\
-Tính sáng tạo & Không chỉ chạy visualization gốc mà tái cấu trúc thành framework benchmark: risk label, safety map, planner baseline, radar FFT/range-Doppler, IMU rolling plot, predicted depth và trajectory trong cùng video. \\
-Mức độ hoàn thiện & Có output cụ thể: bảng CSV, hình PNG, video MP4, mã nguồn module hóa, batch benchmark 300 trial, risk feature 2584 dòng trên 50 trial, depth/ONNX/TensorRT-provider probe, representation/feasibility summary, ARCO 3D bbox và lệnh reproduce. \\
-Hiệu quả tính toán & Metric trajectory chạy rất nhanh; A*/RRT ở mức vài ms/trial, MPPI khoảng \(39.93\,ms\), RRT* Python khoảng \(1196.40\,ms\). Depth Anything V2 Small batch đạt \(0.0639\,s/frame\) wall-time và \(0.0174\,s/frame\) inference-time; radar range-Doppler sample chạy cục bộ dưới vài giây. TensorRT engine thật chưa claim do thiếu runtime trên container hiện tại. \\
+Độ khó & Kết hợp UAV indoor, log cảm biến thật, ground truth OptiTrack, metric an toàn, policy learning và simulator validation. \\
+Tính mới & Biến ODA từ raw dataset thành benchmark/evaluator có task, split, label, metric và baseline tracks. \\
+Hiệu quả & Giảm rủi ro thử nghiệm bằng cách loại unsafe candidate sớm; so sánh được planner/BC/risk trên cùng trial. \\
+Minh chứng & 300 trials, 14,700 policy-dataset samples, planner safety table, trajectory-quality proxy, ODA latency replay 384 cases, Filtered BC violation giảm mạnh, MLP risk PR-AUC cao hơn TTC, PyBullet validation 20 cases/method. \\
+Giới hạn & Latency replay mới là emulation trên log; PyBullet rank transfer mới ở mức \(\rho=0.40\); Filtered BC collision \(4.44\%\) trên ODA-Bench test và \(16\%\) trong PyBullet validation, nên policy-learning claim cần scoped. \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-So với cách tiếp cận khảo sát lý thuyết đơn thuần, pipeline hiện tại tạo được kết quả chạy được và có số liệu kiểm chứng. So với việc bắt đầu bằng ROS/Gazebo hoặc mô hình học sâu nặng, cách làm này giảm rủi ro triển khai, phù hợp để trình bày kết quả sớm và làm nền cho so sánh planner. Kết quả Depth Anything V2 Small cũng cho thấy cần đánh giá thực nghiệm thay vì giả định model ``small'' sẽ tự động nhanh hơn hoặc tốt hơn trong pipeline hiện có.
+Tóm lại, các tiêu chí trong Bảng \ref{tab:effectiveness} cho thấy ODA-Bench tạo chuỗi raw log \(\rightarrow\) offline benchmark \(\rightarrow\) validation gate, giúp chọn cấu hình đáng thử tiếp bằng số liệu.
 
-\section{Kết luận}
-Đề tài đã đạt được mục tiêu giai đoạn đầu và bước mở rộng server: xây dựng pipeline nhẹ trên ODA Dataset, tải và xử lý full archive, extract 300 trial mục tiêu, tái dựng quỹ đạo MAV với vật cản, tính metric an toàn, tạo nhãn rủi ro, xuất video định tính đa cảm biến và so sánh quỹ đạo thật với các planner baseline. Tính mới của sản phẩm nằm ở việc biến ODA thành một quy trình benchmark có thể mở rộng: từ metadata/ground truth tới risk label, radar, IMU, relative monocular depth, planner comparison và imbalance-aware risk prediction.
+\section{THREATS TO VALIDITY}
+Có sáu giới hạn chính cần đọc kèm kết quả. Thứ nhất, benchmark chính dùng footprint \(x-z\) và obstacle cylinder bán kính \(0.20\,m\), nên chưa thay thế đánh giá dynamics đầy đủ của quadrotor với acceleration, jerk, yaw-rate và actuator constraints. Thứ hai, planner baseline dùng obstacle map dựng từ metadata ODA; đây là privileged-map setting để kiểm tra evaluator và planner geometry, chưa phải perception online hoàn chỉnh từ sensor noise. Thứ ba, các planner chưa được budget-match đầy đủ trên toàn bộ 300 trial; budget sweep hiện chạy trên 45 trial để minh họa trade-off. Thứ tư, human collision/violation được tính theo mô hình hình học và safety margin của evaluator, không đồng nghĩa tất cả case đó là va chạm vật lý trong log gốc. Thứ năm, PyBullet validation được báo cáo trên 20 cases/method ở speed \(=1\,m/s\), với rank transfer \(\rho=0.40\) trong validation set này. Thứ sáu, timing được đo trên nhiều môi trường phần cứng khác nhau, nên chỉ nên dùng để so sánh tương đối trong từng track; chưa claim FPS hoặc runtime onboard tối ưu.
 
-Hướng phát triển tiếp theo là chuyển TensorRT sang server/image có runtime đầy đủ để đo engine thật, mở rộng perception-risk lên nhiều trial ODA hơn, và dùng ARCO/Multi-LiDAR như stress-test sensing/generalization. Multi-LiDAR/ARCO chỉ nên dùng để chứng minh tổng quát hóa và độ khó perception; ODA vẫn là benchmark UAV obstacle-avoidance chính. Riêng depth panel cần tiếp tục hiệu chuẩn với ground truth/radar; nhánh LiDAR hiện đã có prototype ground removal, voxel clustering và 3D bbox trên ARCO, cần mở rộng thêm frame/dataset khi có quyền truy cập Multi-LiDAR.
+\section{KẾT LUẬN}
+Đề tài đã hoàn thành phiên bản ODA-Bench rút gọn với các thành phần chính: data adapter, evaluator, safety labels, planner baseline, latency-aware replay, Filtered BC, risk predictor và PyBullet validation gate. Các kết quả trong Bảng \ref{tab:planner}, \ref{tab:trajectory-quality}, \ref{tab:frontend-latency}, \ref{tab:oda-replay}, \ref{tab:learning-risk} và \ref{tab:pybullet-validation} cho thấy benchmark tách được unsafe straight-line/human-near-miss behavior, đo được trade-off safety/smoothness/compute, chỉ ra giới hạn tốc độ do ODA RGB/depth latency, Filtered BC cải thiện violation so với Plain BC, MLP risk ranking tốt hơn TTC, và PyBullet validation đạt RRT* success \(0.75\), Filtered BC \(0.69\), MPPI \(0.65\). Kết luận phù hợp là ODA-Bench giúp lọc và phân tích candidate trước simulator/robot thật trong một protocol lặp lại được.
 
-\renewcommand{\refname}{Tài liệu tham khảo}
-{\footnotesize
+Hướng phát triển tiếp theo là mở rộng validation coverage, đặc biệt PyBullet \(100\)--\(300\) cases/method với speed sweep \(1\)--\(4\,m/s\) và delay sweep \(0\)--\(300\,ms\), thêm seed variance/confidence interval cho các planner stochastic, làm budget-matched curve trên toàn bộ test set, cải thiện closed-loop robustness của Filtered BC và thêm offline RL baselines. Claim cuối cùng nên giữ ở mức: benchmark construction + evaluator + tasks + baselines + PyBullet validation gate.
+
+\renewcommand{\refname}{TÀI LIỆU THAM KHẢO}
+\balance
+{\small
 \begin{thebibliography}{9}
 \setlength{\itemsep}{0pt}
 \setlength{\parskip}{0pt}
-\bibitem{odaGithub}
-J. Dupeyroux, R. Dinaux, N. Wessendorp, and G. de Croon, ``ODA Dataset GitHub Repository,'' \url{https://github.com/JuSquare/ODA_Dataset}.
-
-\bibitem{oda4tu}
-J. Dupeyroux, R. Dinaux, N. Wessendorp, and G. de Croon, ``The Obstacle Detection and Avoidance Dataset for Drones,'' 4TU.ResearchData, DOI: \url{https://doi.org/10.4121/14214236.v1}.
-
 \bibitem{odaPaper}
-J. Dupeyroux, R. Dinaux, N. Wessendorp, and G. C. H. E. de Croon, ``A Novel Obstacle Detection and Avoidance Dataset for Drones,'' 2022. \url{https://research.tudelft.nl/en/publications/a-novel-obstacle-detection-and-avoidance-dataset-for-drones/}.
+J. Dupeyroux, R. Dinaux, N. Wessendorp, and G. C. H. E. de Croon, ``A Novel Obstacle Detection and Avoidance Dataset for Drones,'' 2022. \url{https://doi.org/10.1145/3522784.3522786}.
 
-\bibitem{dptPaper}
-R. Ranftl, A. Bochkovskiy, and V. Koltun, ``Vision Transformers for Dense Prediction,'' ICCV, 2021. \url{https://arxiv.org/abs/2103.13413}.
+\bibitem{odaGithub}
+J. Dupeyroux et al., ``Obstacle Detection \& Avoidance Dataset Repository.'' \url{https://github.com/JuSquare/ODA_Dataset}.
 
-\bibitem{dptModel}
-Intel, ``DPT-Hybrid MiDaS model card,'' Hugging Face. \url{https://huggingface.co/Intel/dpt-hybrid-midas}.
+\bibitem{avoidbench}
+H. Yu, G. C. H. E. de Croon, and C. De Wagter, ``AvoidBench: A high-fidelity vision-based obstacle avoidance benchmarking suite for multi-rotors,'' ICRA 2023. \url{https://doi.org/10.1109/ICRA48891.2023.10161097}.
 
-\bibitem{depthAnythingV2}
-Depth Anything, ``Depth Anything V2 Small -- Transformers Version,'' Hugging Face. \url{https://huggingface.co/depth-anything/Depth-Anything-V2-Small-hf}.
+\bibitem{flightmare}
+Y. Song, S. Naji, E. Kaufmann, A. Loquercio, and D. Scaramuzza, ``Flightmare: A Flexible Quadrotor Simulator,'' CoRL 2020. \url{https://arxiv.org/abs/2009.00563}.
 
-\bibitem{mppi}
-Rapyuta Robotics, ``MPPI Controller,'' GitHub. \url{https://github.com/rapyuta-robotics/mppi_controller}.
+\bibitem{dronet}
+A. Loquercio, A. I. Maqueda, C. R. del-Blanco, and D. Scaramuzza, ``DroNet: Learning to Fly by Driving,'' IEEE RA-L, 2018. \url{https://rpg.ifi.uzh.ch/dronet.html}.
 
-\bibitem{fastlivo2}
-HKU-MARS, ``FAST-LIVO2,'' GitHub. \url{https://github.com/hku-mars/FAST-LIVO2}.
+\bibitem{d4rl}
+J. Fu, A. Kumar, O. Nachum, G. Tucker, and S. Levine, ``D4RL: Datasets for Deep Data-Driven Reinforcement Learning,'' 2020. \url{https://arxiv.org/abs/2004.07219}.
 
-\bibitem{multiLidar}
-TIERS, ``Multi-LiDAR Multi-UAV Dataset,'' \url{https://tiers.github.io/multi_lidar_multi_uav_dataset/}.
+\bibitem{td3bc}
+S. Fujimoto and S. S. Gu, ``A Minimalist Approach to Offline Reinforcement Learning,'' 2021. \url{https://arxiv.org/abs/2106.06860}.
 
-\bibitem{arco}
-Robotics, Vision and Control Group, Universidad Pablo de Olavide, ``ARCO Dataset,'' \url{https://robotics.upo.es/datasets/ArcoDataset/main.html}.
+\bibitem{decisionTransformer}
+L. Chen et al., ``Decision Transformer: Reinforcement Learning via Sequence Modeling,'' 2021. \url{https://arxiv.org/abs/2106.01345}.
+
+\bibitem{gymPybullet}
+J. Panerati et al., ``gym-pybullet-drones: PyBullet-based Gym for quadrotor reinforcement learning,'' 2021. \url{https://github.com/utiasDSL/gym-pybullet-drones}.
 \end{thebibliography}
 }
 

@@ -1,0 +1,4 @@
+scenario,removed_sensor,full_min_clearance_m,full_collision,full_path_length_m,ablated_min_clearance_m,ablated_collision,ablated_path_length_m
+without_lidar,lidar,0.2850,0,8.6987,-0.1057,1,8.7216
+without_depth,depth,0.2100,0,8.9192,-0.3234,1,8.6987
+without_radar,radar,0.2000,0,8.8903,-0.3683,1,8.6987

@@ -1,0 +1,31 @@
+frontend,source,uav_speed_mps,cases,safe_count,violation_count,collision_count,safe_rate_pct,violation_rate_pct,collision_rate_pct,mean_total_delay_ms,mean_delay_distance_m,mean_min_body_clearance_m,frontend_to_occupancy_ms,sensor_period_ms
+bbox_cached_depth_mux_to_grid,Multi-LiDAR bbox + ODA cached depth,1.0,8,8,0,0,100.0,0.0,0.0,247.223,0.2472,0.3492,3.103,200.0
+bbox_cached_depth_mux_to_grid,Multi-LiDAR bbox + ODA cached depth,2.0,8,8,0,0,100.0,0.0,0.0,308.371,0.6167,0.4958,3.103,200.0
+bbox_cached_depth_mux_to_grid,Multi-LiDAR bbox + ODA cached depth,3.0,8,7,1,0,87.5,12.5,0.0,415.539,1.2466,0.3462,3.103,200.0
+bbox_cached_depth_mux_to_grid,Multi-LiDAR bbox + ODA cached depth,4.0,8,0,7,1,0.0,87.5,12.5,414.252,1.657,0.0515,3.103,200.0
+bbox_cached_depth_mux_to_grid,Multi-LiDAR bbox + ODA cached depth,5.0,8,0,0,8,0.0,0.0,100.0,415.119,2.0756,-0.2864,3.103,200.0
+bbox_cached_depth_mux_to_grid,Multi-LiDAR bbox + ODA cached depth,6.0,8,0,0,8,0.0,0.0,100.0,422.595,2.5356,-0.2881,3.103,200.0
+external_lidar_bbox_to_grid,Multi-LiDAR bbox CSV,1.0,8,8,0,0,100.0,0.0,0.0,150.059,0.15,0.3875,0.017,100.0
+external_lidar_bbox_to_grid,Multi-LiDAR bbox CSV,2.0,8,8,0,0,100.0,0.0,0.0,206.42,0.4128,0.2693,0.017,100.0
+external_lidar_bbox_to_grid,Multi-LiDAR bbox CSV,3.0,8,8,0,0,100.0,0.0,0.0,322.176,0.9665,0.5131,0.017,100.0
+external_lidar_bbox_to_grid,Multi-LiDAR bbox CSV,4.0,8,8,0,0,100.0,0.0,0.0,303.453,1.2138,0.3906,0.017,100.0
+external_lidar_bbox_to_grid,Multi-LiDAR bbox CSV,5.0,8,0,8,0,0.0,100.0,0.0,300.998,1.505,0.1831,0.017,100.0
+external_lidar_bbox_to_grid,Multi-LiDAR bbox CSV,6.0,8,0,0,8,0.0,0.0,100.0,312.26,1.8736,-0.1066,0.017,100.0
+ideal_occupancy_esdf,synthetic_gt,1.0,8,8,0,0,100.0,0.0,0.0,159.21,0.1592,0.3804,6.146,100.0
+ideal_occupancy_esdf,synthetic_gt,2.0,8,8,0,0,100.0,0.0,0.0,223.513,0.447,0.2871,6.146,100.0
+ideal_occupancy_esdf,synthetic_gt,3.0,8,7,1,0,87.5,12.5,0.0,374.714,1.1241,0.4367,6.146,100.0
+ideal_occupancy_esdf,synthetic_gt,4.0,8,5,1,2,62.5,12.5,25.0,369.189,1.4767,0.187,6.146,100.0
+ideal_occupancy_esdf,synthetic_gt,5.0,8,0,8,0,0.0,100.0,0.0,316.007,1.58,0.1359,6.146,100.0
+ideal_occupancy_esdf,synthetic_gt,6.0,8,0,0,8,0.0,0.0,100.0,313.528,1.8812,-0.0763,6.146,100.0
+oda_cached_depth_to_grid,ODA RGB cached depth,1.0,8,8,0,0,100.0,0.0,0.0,249.246,0.2492,0.3468,2.72,200.0
+oda_cached_depth_to_grid,ODA RGB cached depth,2.0,8,8,0,0,100.0,0.0,0.0,307.081,0.6142,0.4946,2.72,200.0
+oda_cached_depth_to_grid,ODA RGB cached depth,3.0,8,8,0,0,100.0,0.0,0.0,405.94,1.2178,0.3911,2.72,200.0
+oda_cached_depth_to_grid,ODA RGB cached depth,4.0,8,0,7,1,0.0,87.5,12.5,413.296,1.6532,0.0805,2.72,200.0
+oda_cached_depth_to_grid,ODA RGB cached depth,5.0,8,0,0,8,0.0,0.0,100.0,445.104,2.2255,-0.2898,2.72,200.0
+oda_cached_depth_to_grid,ODA RGB cached depth,6.0,8,0,0,8,0.0,0.0,100.0,450.219,2.7013,-0.2915,2.72,200.0
+oda_depth_anything_to_grid,ODA RGB,1.0,8,8,0,0,100.0,0.0,0.0,312.401,0.3124,0.315,66.594,200.0
+oda_depth_anything_to_grid,ODA RGB,2.0,8,8,0,0,100.0,0.0,0.0,368.93,0.7379,0.5064,66.594,200.0
+oda_depth_anything_to_grid,ODA RGB,3.0,8,5,3,0,62.5,37.5,0.0,464.611,1.3938,0.2617,66.594,200.0
+oda_depth_anything_to_grid,ODA RGB,4.0,8,0,0,8,0.0,0.0,100.0,466.699,1.8668,-0.0602,66.594,200.0
+oda_depth_anything_to_grid,ODA RGB,5.0,8,0,0,8,0.0,0.0,100.0,487.723,2.4386,-0.2882,66.594,200.0
+oda_depth_anything_to_grid,ODA RGB,6.0,8,0,0,8,0.0,0.0,100.0,485.012,2.9101,-0.2876,66.594,200.0

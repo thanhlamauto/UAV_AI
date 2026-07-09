@@ -1,0 +1,6 @@
+Type: sensor_msgs/msg/PointCloud2
+Publisher count: 1
+Subscription count: 0
+Type: nvblox_msgs/msg/Mesh
+Publisher count: 1
+Subscription count: 0

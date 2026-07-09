@@ -1,6 +1,10 @@
 data/raw/
 data/processed/
 .venv/
+.venv-*/
+ros2_ws/
+server_artifacts/
+node_modules/
 __pycache__/
 *.pyc
 .DS_Store
@@ -16,6 +20,7 @@ tools/
 *.bag
 *.zip
 *.npz
+*.tar.gz
 
 # Keep compact result summaries/figures, but skip rendered videos.
 outputs/videos/

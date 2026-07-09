@@ -1,0 +1,6 @@
+source,occupied_cells,width,height,start_x,start_y,goal_x,goal_y,path_waypoints,path_length_m
+lidar_bbox_csv,626,88,72,7.7425999999999995,0.0,24.5426,4.0,85,18.45685424949238
+metric_depth_image,269,80,80,0.0,0.0,6.0,0.0,61,6.579898987322333
+relative_predicted_depth_proxy,30,80,80,0.0,0.0,6.0,0.0,66,6.872792206135786
+lidar_bbox_plus_relative_depth_mux,638,133,75,0.0,0.0,24.5426,4.0,127,27.436753236814713
+lidar_bbox_plus_cached_depth_mux,666,133,75,0.0,0.0,24.5426,4.0,128,27.802438661763954

@@ -1,0 +1,6 @@
+run_dir,mode,planner,status,missing_topics,missing_messages,launch_findings,likely_next_action
+outputs/ros2_demo_runtime/bbox_cached_depth_mux_astar_20260623_043046,bbox_cached_depth_mux,astar,passed,,,,Inspect verify.log and launch.log for this run.
+outputs/ros2_demo_runtime/gazebo_depth_astar_20260623_052445,gazebo_depth,astar,passed,,,[gz-1] libEGL warning: egl: failed to create dri2 screen,Inspect verify.log and launch.log for this run.
+outputs/ros2_demo_runtime/gazebo_fused_astar_20260623_071634,gazebo_fused,astar,passed,,,[gz-1] libEGL warning: egl: failed to create dri2 screen,Inspect verify.log and launch.log for this run.
+outputs/ros2_demo_runtime/gazebo_fused_mppi_20260623_112924,gazebo_fused,mppi,passed,,,[gz-1] libEGL warning: egl: failed to create dri2 screen,Inspect verify.log and launch.log for this run.
+outputs/ros2_demo_runtime/gazebo_laserscan_astar_20260623_052303,gazebo_laserscan,astar,passed,,,[gz-1] libEGL warning: egl: failed to create dri2 screen,Inspect verify.log and launch.log for this run.

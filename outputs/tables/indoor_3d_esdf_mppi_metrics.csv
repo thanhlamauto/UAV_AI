@@ -1,0 +1,2 @@
+method,map_resolution_m,voxels_total,occupied_voxels,horizon_steps,num_rollouts,iterations,safety_radius_m,path_length_m,smoothness,min_altitude_m,max_altitude_m,altitude_change_m,min_esdf_distance_m,min_safety_margin_m,collision,safety_violation,planner_compute_time_ms,seed,direct_line_cost,optimized_cost,cost_reduction_pct
+esdf_mppi_3d,0.15,43680,3084,72,768,12,0.42,7.6455,0.000444,1.15,1.5999,0.4499,0.6783,0.2583,0,0,123.638,31,5289.486,7.6473,99.86

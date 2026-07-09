@@ -1,0 +1,34 @@
+[
+  {
+    "viewport": {
+      "name": "desktop",
+      "width": 1440,
+      "height": 900
+    },
+    "screenshot": "outputs/figures/uav_3d_sim_desktop.png",
+    "ok": true,
+    "canvasWidth": 1440,
+    "canvasHeight": 900,
+    "sampleWidth": 360,
+    "sampleHeight": 240,
+    "luminanceMean": 241.027,
+    "luminanceStd": 14.094,
+    "nonBackgroundRatio": 0.0166
+  },
+  {
+    "viewport": {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    },
+    "screenshot": "outputs/figures/uav_3d_sim_mobile.png",
+    "ok": true,
+    "canvasWidth": 390,
+    "canvasHeight": 844,
+    "sampleWidth": 360,
+    "sampleHeight": 240,
+    "luminanceMean": 219.157,
+    "luminanceStd": 32.644,
+    "nonBackgroundRatio": 0.541
+  }
+]

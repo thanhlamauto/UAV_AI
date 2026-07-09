@@ -1,0 +1,14 @@
+dataset,sample,topic,frame_offset,timestamp_ns,cluster_id,point_count,voxel_count,bbox_min_x_m,bbox_min_y_m,bbox_min_z_m,bbox_max_x_m,bbox_max_y_m,bbox_max_z_m,bbox_center_x_m,bbox_center_y_m,bbox_center_z_m,bbox_size_x_m,bbox_size_y_m,bbox_size_z_m,bbox_volume_m3
+Multi-LiDAR Multi-UAV,TelloOut02_avia_livox,/avia/livox/lidar,0,1691262939330310283,0,107,63,14.497,-6.404,3.23,18.712,-6.096,4.993,16.6045,-6.25,4.1115,4.215,0.308,1.763,2.2888
+Multi-LiDAR Multi-UAV,TelloOut02_avia_livox,/avia/livox/lidar,0,1691262939330310283,1,84,82,18.941,-6.483,2.403,26.261,-6.36,4.654,22.601,-6.4215,3.5285,7.32,0.123,2.251,2.0267
+Multi-LiDAR Multi-UAV,TelloOut02_avia_livox,/avia/livox/lidar,376,1691262943091186412,0,1077,44,0.947,-0.661,-0.851,6.208,0.737,-0.719,3.5775,0.038,-0.785,5.261,1.398,0.132,0.9708
+Multi-LiDAR Multi-UAV,TelloOut02_avia_livox,/avia/livox/lidar,376,1691262943091186412,1,339,84,3.423,1.484,-0.814,8.687,6.022,0.26,6.055,3.753,-0.277,5.264,4.538,1.074,25.6557
+Multi-LiDAR Multi-UAV,TelloOut02_avia_livox,/avia/livox/lidar,376,1691262943091186412,2,252,177,29.017,-1.755,-0.848,29.896,6.124,4.329,29.4565,2.1845,1.7405,0.879,7.879,5.177,35.854
+Multi-LiDAR Multi-UAV,TelloOut02_avia_livox,/avia/livox/lidar,1129,1691262950620021316,0,211,102,5.454,1.071,-0.907,10.723,5.95,-0.371,8.0885,3.5105,-0.639,5.269,4.879,0.536,13.7792
+Multi-LiDAR Multi-UAV,TelloOut02_avia_livox,/avia/livox/lidar,1129,1691262950620021316,1,101,22,2.61,-0.512,-0.904,7.238,-0.212,-0.76,4.924,-0.362,-0.832,4.628,0.3,0.144,0.1999
+Multi-LiDAR Multi-UAV,TelloOut02_avia_livox,/avia/livox/lidar,1129,1691262950620021316,2,72,9,5.608,3.875,-0.03,5.767,4.018,0.938,5.6875,3.9465,0.454,0.159,0.143,0.968,0.022
+Multi-LiDAR Multi-UAV,TelloOut02_avia_livox,/avia/livox/lidar,1506,1691262954390782221,0,302,42,1.342,-1.929,-0.96,7.435,-0.587,-0.746,4.3885,-1.258,-0.853,6.093,1.342,0.214,1.7498
+Multi-LiDAR Multi-UAV,TelloOut02_avia_livox,/avia/livox/lidar,1882,1691262958150611027,0,309,67,2.836,-2.287,-0.911,7.445,-0.493,-0.782,5.1405,-1.39,-0.8465,4.609,1.794,0.129,1.0666
+Multi-LiDAR Multi-UAV,TelloOut02_avia_livox,/avia/livox/lidar,2259,1691262961930624627,0,470,21,1.856,0.496,-0.751,3.673,2.336,-0.732,2.7645,1.416,-0.7415,1.817,1.84,0.019,0.0635
+Multi-LiDAR Multi-UAV,TelloOut02_avia_livox,/avia/livox/lidar,2636,1691262965690579681,0,987,36,1.007,-0.264,-0.835,5.184,1.139,-0.721,3.0955,0.4375,-0.778,4.177,1.403,0.114,0.6681
+Multi-LiDAR Multi-UAV,TelloOut02_avia_livox,/avia/livox/lidar,2636,1691262965690579681,1,217,145,29.342,-0.795,-0.818,29.867,6.425,4.992,29.6045,2.815,2.087,0.525,7.22,5.81,22.0229

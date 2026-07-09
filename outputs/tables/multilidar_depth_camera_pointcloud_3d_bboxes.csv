@@ -1,0 +1,9 @@
+dataset,sample,topic,frame_offset,timestamp_ns,cluster_id,point_count,voxel_count,bbox_min_x_m,bbox_min_y_m,bbox_min_z_m,bbox_max_x_m,bbox_max_y_m,bbox_max_z_m,bbox_center_x_m,bbox_center_y_m,bbox_center_z_m,bbox_size_x_m,bbox_size_y_m,bbox_size_z_m,bbox_volume_m3
+Multi-LiDAR Multi-UAV,Calibration_depth_camera,/camera/depth/color/points,0,1691060515857135136,0,10623,186,0.05,-0.5533,2.374,1.5236,0.925,2.996,0.7868,0.1859,2.685,1.4735,1.4783,0.622,1.3549
+Multi-LiDAR Multi-UAV,Calibration_depth_camera,/camera/depth/color/points,39,1691060517154978314,0,10452,179,0.0543,-0.5222,2.374,1.516,0.9128,2.996,0.7851,0.1953,2.685,1.4617,1.4349,0.622,1.3046
+Multi-LiDAR Multi-UAV,Calibration_depth_camera,/camera/depth/color/points,79,1691060518491129902,0,10320,176,0.0541,-0.5299,2.365,1.5236,0.9268,2.996,0.7888,0.1984,2.6805,1.4695,1.4567,0.631,1.3507
+Multi-LiDAR Multi-UAV,Calibration_depth_camera,/camera/depth/color/points,118,1691060519793475102,0,10771,166,0.0541,-0.5144,2.365,1.5236,0.9305,2.996,0.7888,0.208,2.6805,1.4695,1.4448,0.631,1.3397
+Multi-LiDAR Multi-UAV,Calibration_depth_camera,/camera/depth/color/points,158,1691060521125451229,0,9826,172,0.0543,-0.5299,2.365,1.516,0.926,2.996,0.7851,0.198,2.6805,1.4617,1.456,0.631,1.3429
+Multi-LiDAR Multi-UAV,Calibration_depth_camera,/camera/depth/color/points,197,1691060522427947067,0,9897,171,0.0551,-0.5299,2.356,1.5236,0.9354,2.996,0.7894,0.2027,2.676,1.4685,1.4653,0.64,1.3771
+Multi-LiDAR Multi-UAV,Calibration_depth_camera,/camera/depth/color/points,237,1691060523766806510,0,10551,184,0.0541,-0.5299,2.365,1.5236,0.9295,2.996,0.7888,0.1998,2.6805,1.4695,1.4594,0.631,1.3533
+Multi-LiDAR Multi-UAV,Calibration_depth_camera,/camera/depth/color/points,277,1691060525094230778,0,10936,185,0.0543,-0.5455,2.365,1.5236,0.9175,2.996,0.7889,0.186,2.6805,1.4693,1.463,0.631,1.3564

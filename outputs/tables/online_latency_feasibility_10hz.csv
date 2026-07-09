@@ -1,0 +1,7 @@
+scenario,sensor_hz,lidar_period_ms,uav_speed_mps,mppi_rollouts,mppi_iterations,mppi_horizon_steps,map_update_ms,mppi_compute_ms,control_publish_ms,total_delay_ms,distance_during_delay_m,direct_safety_breach_range_m,direct_body_contact_range_m,latency_buffer_to_safety_breach_m,latency_buffer_to_body_contact_m,min_esdf_distance_m,min_body_clearance_m,min_safety_margin_m,collision,safety_violation,occupied_voxels,voxels_total
+slow_1mps_light_mppi,10.0,100.0,1.0,384,8,56,5.851,28.852,10.0,144.703,0.1447,1.4222,1.8028,1.2775,1.658,0.5885,0.3885,0.1385,0,0,3084,43680
+nominal_2mps_default_mppi,10.0,100.0,2.0,768,10,64,5.851,87.441,10.0,203.292,0.4066,1.4222,1.8028,1.0156,1.3962,0.468,0.268,0.018,0,0,3084,43680
+fast_3mps_heavier_mppi,10.0,100.0,3.0,1152,12,72,5.851,187.844,10.0,303.695,0.9111,1.4222,1.8028,0.5111,0.8917,0.7229,0.5229,0.2729,0,0,3084,43680
+very_fast_4mps_heavy_mppi,10.0,100.0,4.0,1152,12,72,5.851,184.481,10.0,300.333,1.2013,1.4222,1.8028,0.2208,0.6014,0.6027,0.4027,0.1527,0,0,3084,43680
+extreme_5mps_heavy_mppi,10.0,100.0,5.0,1152,12,72,5.851,205.548,10.0,321.399,1.607,1.4222,1.8028,-0.1848,0.1958,0.3251,0.1251,-0.1249,0,1,3084,43680
+failure_6mps_heavy_mppi,10.0,100.0,6.0,1152,12,72,5.851,184.58,10.0,300.431,1.8026,1.4222,1.8028,-0.3804,0.0002,0.1853,-0.0147,-0.2647,1,1,3084,43680

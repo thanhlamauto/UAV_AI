@@ -1,0 +1,33 @@
+== Full 3D Voxel/ESDF Stack Readiness ==
+ROS_DISTRO=jazzy
+
+PASS command: NVIDIA SMI (nvidia-smi)
+PASS command: ROS2 CLI (ros2)
+PASS command: Gazebo (gz)
+PASS command: colcon (colcon)
+
+== GPU ==
+NVIDIA GeForce RTX 2060 SUPER, 8192 MiB, 580.126.09
+
+== ROS packages currently installed ==
+PASS ros pkg: nvblox_ros
+PASS ros pkg: nvblox_msgs
+PASS ros pkg: isaac_ros_nvblox
+PASS ros pkg: ros_gz_bridge
+PASS ros pkg: rviz2
+
+== Apt package candidates ==
+PASS apt candidate: ros-jazzy-isaac-ros-nvblox -> 4.4.0-0noble.20260428214149005
+PASS apt candidate: ros-jazzy-nvblox-msgs -> 4.4.0-0noble.20260428170830121
+PASS apt candidate: ros-jazzy-ros-gz-bridge -> 1.0.22-1noble.20260615.142443
+PASS apt candidate: ros-jazzy-octomap -> 1.10.0-4noble.20260225.055711
+PASS apt candidate: ros-jazzy-octomap-msgs -> 2.0.1-1noble.20260615.112219
+
+== Required next evidence ==
+1. Launch NVBlox with depth image + camera_info + pose/tf.
+2. Verify non-empty topics:
+   - /nvblox_node/mesh or /nvblox_node/mesh_marker
+   - /nvblox_node/tsdf_layer or /nvblox_node/occupancy_layer
+   - /nvblox_node/static_esdf_pointcloud or /nvblox_node/static_map_slice
+3. Record rosbag and video evidence.
+4. Bridge DistanceMapSlice/ESDF into MPPI clearance cost.
